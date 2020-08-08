@@ -1,73 +1,66 @@
 <template>
-  <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">
-        geoHoop
-      </h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
+  <div>
+    <Header />
+    <SearchForm />
+    <main class="container">
+      <div class="search-result">
+        <div
+          v-for="court in results"
+          :key="court.id"
+          class="card"
         >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
+          <img :src="court.img[0]">
+          <p>{{ court.name }}</p>
+        </div>
       </div>
-    </div>
+    </main>
   </div>
 </template>
 
 <script>
-export default {}
+import firebase from '~/plugins/firebase';
+
+export default {
+  data() {
+    return {
+      results: []
+    }
+  },
+  mounted() {
+    const db = firebase.firestore();
+    db.collection('court').get().then((court) => {
+      court.forEach((v) => {
+        this.results.push(v.data());
+      });
+      console.log(this.results);
+    }).catch((error) => {
+      console.log(error);
+    });
+  },
+  methods: {
+  }
+}
 </script>
 
-<style>
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.title {
-  font-family:
-    'Quicksand',
-    'Source Sans Pro',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
+<style lang="scss" scoped>
+main {
+  background: #fff;
+  width: 100%;
+  .search-result {
+    display: flex;
+    flex-direction: column;
+    .card {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-bottom: 1px solid #eee;
+      img {
+        width: 300px;
+        height: 185.414px;
+        object-fit: cover;
+        border-radius: 10px;
+      }
+    }
+  }
 }
 </style>
