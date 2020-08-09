@@ -153,7 +153,7 @@ export default {
     }
     .subtitle {
       color: #fff;
-      // background: rgba(#000, 0.3);
+      background: rgba(#000, 0.3);
       text-align: center;
       width: 100%;
       max-width: 340px;
