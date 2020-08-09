@@ -16,6 +16,7 @@
             v-for="(court, idx) in arr"
             :key="idx"
             class="card"
+            @click="moveTo(court.id)"
           >
             <div class="overlay">
               <div class="info likes">
@@ -27,10 +28,7 @@
                 <p>{{ court.bookmarks }}</p>
               </div>
             </div>
-            <img
-              :src="court.img[0]"
-              @click="moveTo(court.id)"
-            >
+            <img :src="court.img[0]">
           </div>
         </div>
       </div>
@@ -57,7 +55,6 @@ export default {
       court.forEach((v) => {
         this.results.push(v.data());
       });
-      console.log(this.results);
       this.clacArray();
     }).catch((error) => {
       console.log(error);
@@ -73,10 +70,10 @@ export default {
         const mod = idx % 3;
         this.list[quo][mod] = v;
       });
-      console.log(this.list);
     },
     moveTo(id) {
       console.log(id);
+      this.$router.push({ name: 'court', params: { id } });
     }
   }
 }
@@ -112,6 +109,7 @@ main {
       .card {
         width: calc(100% / 3);
         height: auto;
+        // ここをwidthと同じ大きさにしたい
         border: none;
         position: relative;
         .overlay {
