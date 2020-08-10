@@ -72,8 +72,7 @@ export default {
       });
     },
     moveTo(id) {
-      console.log(id);
-      this.$router.push({ name: 'court', params: { id } });
+      this.$router.push({ name: 'court', query: { id: id } });
     }
   }
 }

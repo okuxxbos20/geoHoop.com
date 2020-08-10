@@ -1,28 +1,27 @@
 <template>
   <div class="">
-    <p>court id is : {{ id }}</p>
+    <p>{{ court }}</p>
   </div>
 </template>
 
 <script>
-// import firebase from '~/plugins/firebase';
-// const db = firebase.firestore();
+import firebase from '~/plugins/firebase';
+const db = firebase.firestore();
 
 export default {
   created() {
-    this.id = this.$route.path.substr(9);
-    // db.collection('court').doc(id).get()
-    //   .then(court => {
-    //     this.court = court.data();
-    //     console.log(this.court);
-    //   })
-    //   .catch(error => {
-    //     console.log(error);
-    //   })
+    const id = $nuxt.$route.query.id;
+    db.collection('court').doc(id).get()
+      .then(court => {
+        this.court = court.data();
+        console.log(this.court);
+      })
+      .catch(error => {
+        console.log(error);
+      })
   },
   data() {
     return {
-      id: '',
       court: ''
     }
   }
