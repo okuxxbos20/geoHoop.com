@@ -35,7 +35,11 @@ export default {
   ** https://nuxtjs.org/guide/plugins
   */
   plugins: [
-    '~/plugins/firebase'
+    '~/plugins/firebase',
+    {
+      src: '~/plugins/vue2-google-maps',
+      ssr: false
+    }
   ],
   /*
   ** Auto import components
@@ -59,5 +63,6 @@ export default {
   ** See https://nuxtjs.org/api/configuration-build/
   */
   build: {
+    transpile: [/^vue2-google-maps($|\/)/]
   }
 }
