@@ -5,7 +5,7 @@
       <p
         v-if="!isAlreadyLogin"
         class="not-login"
-        @click="isLoginformOprn = true"
+        @click="isLoginformOpen = true"
       >
         Login
       </p>
@@ -14,14 +14,14 @@
         class="aleady-login"
         @click="moveToProfile()"
       >
-        <img v-if="!user.uPhoto" src="@/assets/img/avatar.png">
-        <img v-if="user.uPhoto" :src="user.uPhoto">
+        <img v-if="!user.img" src="@/assets/img/avatar.png">
+        <img v-if="user.img" :src="user.img">
       </div>
     </div>
     <div
-      v-if="isLoginformOprn"
+      v-if="isLoginformOpen"
       class="form-window"
-      @click.self="isLoginformOprn = !isLoginformOprn"
+      @click.self="isLoginformOpen = !isLoginformOpen"
     >
       <form @submit.prevent="submitForm()">
         <div v-if="isLoginForm" class="input-place">
@@ -65,21 +65,20 @@ export default {
   data() {
     return {
       isAlreadyLogin: false,
-      isLoginformOprn: false,
+      isLoginformOpen: false,
       isLoginForm: true,
       isError: false,
       user: {
         uid: '',
-        uName: '',
-        uPhoto: '',
-        uMail: '',
+        name: '',
+        img: '',
+        email: '',
         isGoogleLogin: false
       },
       loginEmail: '',
       loginPassword: '',
       email: '',
-      password: '',
-      // isOpenMenu: false
+      password: ''
     };
   },
   async mounted () {
@@ -88,9 +87,9 @@ export default {
         this.isAlreadyLogin = true;
         this.user = {
           uid: user.uid,
-          uName: user.displayName,
-          uPhoto: user.photoURL,
-          uMail: user.email,
+          name: user.displayName,
+          img: user.photoURL,
+          email: user.email,
           isGoogleLogin: false
         }
       } else {
@@ -101,11 +100,9 @@ export default {
   methods: {
     submitForm() {
       if (!this.isLoginForm && !this.isAlreadyLogin) {
-        // createフォームが開いている、かつログインしたことがない
         this.registerUser();
       }
       if (this.isLoginForm && !this.isAlreadyLogin) {
-        // loginフォームが開いている、かつ既にログイン済み
         this.loginUser();
       }
     },
@@ -117,10 +114,11 @@ export default {
           img: '',
           uid: user.user.uid,
           email: this.email,
-          bookmarks: []
+          bookmarks: [],
+          isGoogleLogin: false
         }).then(() => {
           console.log('success to create new user!');
-          this.isLoginformOprn = false;
+          this.isLoginformOpen = false;
         }).catch((error) => {
           this.error = error.code;
         })
@@ -134,7 +132,7 @@ export default {
       auth.signInWithEmailAndPassword(this.loginEmail, this.loginPassword)
       .then(() => {
         console.log('success to login!');
-        this.isLoginformOprn = false;
+        this.isLoginformOpen = false;
       })
       .catch((error) => {
         this.isError = true;
@@ -147,15 +145,22 @@ export default {
     googleLogin() {
       const provider = new firebase.auth.GoogleAuthProvider();
       auth.signInWithPopup(provider).then(user => {
-        console.log('success to google login!');
-        console.log(user.user);
+        firebase.firestore().collection('users').doc(user.user.uid).set({
+          name: user.user.displayName,
+          img: user.user.photoURL,
+          uid: user.user.uid,
+          email: user.user.email,
+          bookmarks: [],
+          isGoogleLogin: true
+        });
         this.user = {
-          uName: user.user.displayName,
-          uPhoto: user.user.photoURL,
-          uMail: user.user.email,
+          name: user.user.displayName,
+          img: user.user.photoURL,
+          uid: user.user.uid,
+          email: user.user.email,
           isGoogleLogin: true
         };
-        this.isLoginformOprn = false;
+        this.isLoginformOpen = false;
         console.log(this.user);
       }).catch(error => {
         this.isError = true;
@@ -168,8 +173,7 @@ export default {
     }
   }
 }
-</script>
-
+</script>;
 <style lang="scss" scoped>
 .header {
   width: 100%;
@@ -183,7 +187,6 @@ export default {
   top: 0;
   .title {
     color: #eee;
-    // background: rgba(#000, 0.3);
     padding: 5px 10px;
     position: absolute;
     top: 25px;
@@ -266,6 +269,7 @@ export default {
            cursor: pointer;
            transform: scale(1.1);
          }
+         &:focus { outline: none; }
        }
        .login-btn { background: #323232; }
        .create-btn { background: #00b5cc; }
