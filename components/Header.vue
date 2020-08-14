@@ -168,8 +168,7 @@ export default {
       });
     },
     moveToProfile() {
-      const id = this.user.uid;
-      this.$router.push({ name: 'profile', query: { id: id } });
+      this.$router.push('profile');
     }
   }
 }
