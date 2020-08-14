@@ -4,7 +4,7 @@
       <form>
         <div class="input-place">
           <div class="prfecture">
-            <select class="" @change="getPrefecture($event.target.value)">
+            <select @change="getPrefecture($event.target.value)">
               <option
                 v-for="pre in prefectures"
                 :key="pre.code"
@@ -16,7 +16,7 @@
             </select>
           </div>
           <div class="city">
-            <select class="" @change="getCity($event.target.value)">
+            <select @change="getCity($event.target.value)">
               <option
                 v-for="city in cities"
                 :key="city.id"
