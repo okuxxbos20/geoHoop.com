@@ -25,12 +25,55 @@
         <code>コートを登録</code>
       </div>
     </div>
-    <p class="sign-out" @click="logoutUser()">サインアウト</p>
+    <div v-if="isBookmarkSelected" class="">
+      <p class="sign-out" @click="logoutUser()">サインアウト</p>
+    </div>
+    <div v-if="!isBookmarkSelected" class="register-court">
+      <p class="sentence">コートを登録しよう！</p>
+      <form>
+        <label>コートの名称</label>
+        <input v-model="courtName" type="text" placeholder="代々木公園">
+        <label>都道府県</label>
+        <select @change="getPrefecture($event.target.value)">
+          <option
+            v-for="pre in prefectures"
+            :key="pre.code"
+            :value="pre.code"
+            :selected="pre.isSelected"
+          >
+            {{ pre.name }}
+          </option>
+        </select>
+        <label>地域</label>
+        <select @change="getCity($event.target.value)">
+          <option
+            v-for="city in cities"
+            :key="city.id"
+            :value="city.id"
+          >
+            {{ city.name }}
+          </option>
+        </select>
+        <label>ゴールの数</label>
+        <select class="">
+          <option value="">1</option>
+          <option value="">2</option>
+          <option value="">3</option>
+          <option value="">4</option>
+          <option value="">5</option>
+          <option value="">6</option>
+          <option value="">7</option>
+          <option value="">8以上</option>
+        </select>
+      </form>
+    </div>
   </div>
 </template>
 
 <script>
 import firebase from 'firebase';
+import prefecturesjson from '@/assets/json/prefecture.json';
+import cityjson from '@/assets/json/city.json';
 const auth = firebase.auth();
 const db = firebase.firestore();
 
@@ -57,8 +100,18 @@ export default {
     return {
       lookUpId: '',
       user: '',
-      isBookmarkSelected: true
+      isBookmarkSelected: true,
+      prefectures: [],
+      cities: [],
+      // about court
+      courtName: ''
     }
+  },
+  mounted() {
+    this.prefectures = prefecturesjson.prefectures;
+    this.prefectures.map((v) => {
+      if (v.code === '13') v.isSelected = true;
+    });
   },
   methods: {
     getUser(id) {
@@ -73,6 +126,13 @@ export default {
     logoutUser() {
       auth.signOut();
       this.$router.push('/');
+    },
+    getPrefecture(code) {
+      console.log(code);
+      this.cities = cityjson.filter((v) => v.id === code)[0].cities;
+    },
+    getCity(v) {
+      console.log(v);
     }
   }
 }
@@ -115,8 +175,8 @@ export default {
       margin: 0;
     }
     @mixin selector($tl: 0px, $tr: 0px, $br: 0px, $bl: 0px) {
-      width: calc(50%);
-      height: calc(100%);
+      width: 50%;
+      height: 100%;
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -138,10 +198,44 @@ export default {
       background: #333;
     }
   }
+  .register-court {
+    padding: 8px;
+    text-align: center;
+    .sentence { margin-bottom: 20px; }
+    form {
+      display: flex;
+      flex-direction: column;
+      margin: 0 auto;
+      width: 100%;
+      max-width: 500px;
+      label {
+        font-size: 15px;
+        text-align: left;
+        margin: 0 0 0 5px;
+      }
+      @mixin defaultInput() {
+        color: #262626;
+        background: #f2f2f2;
+        height: 40px;
+        border: none;
+        border-radius: 8px;
+        padding: 5px 10px;
+        margin: 5px 0 25px;
+        &:focus { outline: none; }
+      }
+      input {
+        @include defaultInput();
+      }
+      select {
+        @include defaultInput();
+      }
+    }
+  }
   .sign-out {
     color: #aaa;
     font-size: 12px;
     transition: 200ms;
+    text-align: center;
     &:hover {
       border-bottom: 1px solid #aaa;
       cursor: pointer;
