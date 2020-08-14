@@ -12,7 +12,7 @@
       <div
         v-if="isAlreadyLogin"
         class="aleady-login"
-        @click="logoutUser()"
+        @click="moveToProfile()"
       >
         <img v-if="!user.uPhoto" src="@/assets/img/avatar.png">
         <img v-if="user.uPhoto" :src="user.uPhoto">
@@ -21,7 +21,7 @@
     <div
       v-if="isLoginformOprn"
       class="form-window"
-      @click="isLoginformOprn = !isLoginformOprn"
+      @click.self="isLoginformOprn = !isLoginformOprn"
     >
       <form @submit.prevent="submitForm()">
         <div v-if="isLoginForm" class="input-place">
@@ -69,6 +69,7 @@ export default {
       isLoginForm: true,
       isError: false,
       user: {
+        uid: '',
         uName: '',
         uPhoto: '',
         uMail: '',
@@ -77,7 +78,8 @@ export default {
       loginEmail: '',
       loginPassword: '',
       email: '',
-      password: ''
+      password: '',
+      // isOpenMenu: false
     };
   },
   async mounted () {
@@ -85,6 +87,7 @@ export default {
       if (user) {
         this.isAlreadyLogin = true;
         this.user = {
+          uid: user.uid,
           uName: user.displayName,
           uPhoto: user.photoURL,
           uMail: user.email,
@@ -92,22 +95,21 @@ export default {
         }
       } else {
         this.isAlreadyLogin = false;
-        console.log('is not login...');
       }
     });
   },
   methods: {
-    submitForm () {
+    submitForm() {
       if (!this.isLoginForm && !this.isAlreadyLogin) {
         // createフォームが開いている、かつログインしたことがない
-        this.registerUser ();
+        this.registerUser();
       }
       if (this.isLoginForm && !this.isAlreadyLogin) {
         // loginフォームが開いている、かつ既にログイン済み
-        this.loginUser ();
+        this.loginUser();
       }
     },
-    registerUser () {
+    registerUser() {
       auth.createUserWithEmailAndPassword(this.email, this.password)
       .then((user) => {
         firebase.firestore().collection('users').doc(user.user.uid).set({
@@ -117,20 +119,18 @@ export default {
           email: this.email,
           bookmarks: []
         }).then(() => {
-          console.log('success to create newUser.');
+          console.log('success to create new user!');
           this.isLoginformOprn = false;
         }).catch((error) => {
-          console.log(error);
           this.error = error.code;
         })
       })
       .catch((error) => {
-        console.log(error);
         this.isError = true;
         this.error = error.code;
       });
     },
-    loginUser () {
+    loginUser() {
       auth.signInWithEmailAndPassword(this.loginEmail, this.loginPassword)
       .then(() => {
         console.log('success to login!');
@@ -141,10 +141,10 @@ export default {
         this.error = error.code;
       });
     },
-    logoutUser () {
+    logoutUser() {
       auth.signOut();
     },
-    googleLogin () {
+    googleLogin() {
       const provider = new firebase.auth.GoogleAuthProvider();
       auth.signInWithPopup(provider).then(user => {
         console.log('success to google login!');
@@ -162,6 +162,10 @@ export default {
         this.error = error.message;
       });
     },
+    moveToProfile() {
+      const id = this.user.uid;
+      this.$router.push({ name: 'profile', query: { id: id } });
+    }
   }
 }
 </script>
@@ -199,6 +203,11 @@ export default {
       }
     }
     .aleady-login {
+      transition: 200ms;
+      &:hover {
+        cursor: pointer;
+        transform: scale(1.1);
+      }
       img {
         width: 30px;
         height: 30px;
