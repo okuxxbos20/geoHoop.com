@@ -115,6 +115,8 @@ export default {
           uid: user.user.uid,
           email: this.email,
           bookmarks: [],
+          createdAt: new Date(),
+          modifiedAt: new Date(),
           isGoogleLogin: false
         }).then(() => {
           console.log('success to create new user!');
@@ -150,6 +152,8 @@ export default {
           img: user.user.photoURL,
           uid: user.user.uid,
           email: user.user.email,
+          createdAt: new Date(),
+          modifiedAt: new Date(),
           bookmarks: [],
           isGoogleLogin: true
         });
