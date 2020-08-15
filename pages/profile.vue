@@ -9,63 +9,61 @@
       <h2 class="user-name">{{ user.name }}</h2>
       <p class="user-email">{{ user.email }}</p>
     </div>
-    <div class="switch">
-      <div
-        class="bookamrks"
-        :class="{ selected: isBookmarkSelected }"
-        @click="isBookmarkSelected = true"
-      >
-        <code>ブックマーク</code>
-      </div>
-      <div
-        class="register"
-        :class="{ selected: !isBookmarkSelected }"
-        @click="isBookmarkSelected = false"
-      >
-        <code>コートを登録</code>
-      </div>
-    </div>
+    <SwitchBar
+      :is-bookmark-selected="isBookmarkSelected"
+      @changeStatus="isBookmarkSelected = !isBookmarkSelected"
+    />
     <div v-if="isBookmarkSelected" class="">
       <p class="sign-out" @click="logoutUser()">サインアウト</p>
     </div>
     <div v-if="!isBookmarkSelected" class="register-court">
       <p class="sentence">コートを登録しよう！</p>
       <form>
-        <label>コートの名称</label>
-        <input v-model="courtName" type="text" placeholder="代々木公園">
-        <label>都道府県</label>
-        <select @change="getPrefecture($event.target.value)">
-          <option
-            v-for="pre in prefectures"
-            :key="pre.code"
-            :value="pre.code"
-            :selected="pre.isSelected"
-          >
-            {{ pre.name }}
-          </option>
-        </select>
-        <label>地域</label>
-        <select @change="getCity($event.target.value)">
-          <option
-            v-for="city in cities"
-            :key="city.id"
-            :value="city.id"
-          >
-            {{ city.name }}
-          </option>
-        </select>
-        <label>ゴールの数</label>
-        <select class="">
-          <option value="">1</option>
-          <option value="">2</option>
-          <option value="">3</option>
-          <option value="">4</option>
-          <option value="">5</option>
-          <option value="">6</option>
-          <option value="">7</option>
-          <option value="">8以上</option>
-        </select>
+        <div class="insert-place court-name">
+          <input v-model="court.name" type="text" placeholder="◯◯公園">
+        </div>
+        <div class="insert-place select-prefecture">
+          <span :class="{ deletePlaceholder: true }">都道府県を選択</span>
+          <select @change="getPrefecture($event.target.value)">
+            <option value="" style="display: none;"></option>
+            <option
+              v-for="pre in prefectures"
+              :key="pre.code"
+              :value="pre.code"
+              :selected="pre.isSelected"
+            >
+              {{ pre.name }}
+            </option>
+          </select>
+        </div>
+        <div class="insert-place select-city">
+          <span :class="{ deletePlaceholder: true }">地域を選択</span>
+          <select @change="getCity($event.target.value)">
+            <option
+              v-for="city in cities"
+              :key="city.id"
+              :value="city.id"
+            >
+              {{ city.name }}
+            </option>
+          </select>
+        </div>
+        <div class="insert-place">
+          <span :class="{ deletePlaceholder: true }">ゴールの数を選択</span>
+          <select @change="getHowManyCourt($event.target.value)">
+            <option value="" style="display: none;"></option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8+">8以上</option>
+          </select>
+        </div>
       </form>
+      <button type="button" name="button" class="confirm-btn">登録する</button>
     </div>
   </div>
 </template>
@@ -100,18 +98,34 @@ export default {
     return {
       lookUpId: '',
       user: '',
-      isBookmarkSelected: true,
+      isBookmarkSelected: false,
       prefectures: [],
       cities: [],
       // about court
-      courtName: ''
+      court: {
+        name: '',
+        prefecture: '東京都',
+        city: '千代田区',
+        howManyCourt: null,
+        img: []
+      }
+    }
+  },
+  watch: {
+    court: {
+      deep: true,
+      handler: (court) => {
+        console.log(court);
+      }
     }
   },
   mounted() {
     this.prefectures = prefecturesjson.prefectures;
-    this.prefectures.map((v) => {
-      if (v.code === '13') v.isSelected = true;
-    });
+    this.prefectures.map((v) => v.isSelected = false);
+    // this.prefectures.map((v) => {
+    //   if (v.code === '13') v.isSelected = true;
+    // });
+    // this.cities = cityjson.filter((v) => v.id === '13')[0].cities;
   },
   methods: {
     getUser(id) {
@@ -128,11 +142,14 @@ export default {
       this.$router.push('/');
     },
     getPrefecture(code) {
-      console.log(code);
       this.cities = cityjson.filter((v) => v.id === code)[0].cities;
+      this.court.prefecture = this.prefectures.filter((v) => v.code === code)[0].name;
     },
-    getCity(v) {
-      console.log(v);
+    getCity(id) {
+      this.court.city = this.cities.filter((v) => v.id === id)[0].name;
+    },
+    getHowManyCourt(num) {
+      this.court.howManyCourt = num;
     }
   }
 }
@@ -140,6 +157,7 @@ export default {
 
 <style lang="scss" scoped>
 .profile {
+  margin-bottom: 50px;
   .basic-info {
     color: #262626;
     display: flex;
@@ -157,45 +175,6 @@ export default {
     .user-email {
       color: #aaa;
       margin: 0;
-    }
-  }
-  .switch {
-    width: 95%;
-    max-width: 350px;
-    height: 40px;
-    border: 1px solid #262626;
-    border-radius: 12px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin: 15px auto;
-    code {
-      color: #262626;
-      margin: 0;
-    }
-    @mixin selector($tl: 0px, $tr: 0px, $br: 0px, $bl: 0px) {
-      width: 50%;
-      height: 100%;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-      border-top-left-radius: $tl;
-      border-top-right-radius: $tr;
-      border-bottom-right-radius: $br;
-      border-bottom-left-radius: $bl;
-      &:hover { cursor: pointer; }
-    }
-    .bookamrks {
-      @include selector(10px, 0px, 0px, 10px);
-    }
-    .register {
-      @include selector(0px, 10px, 10px, 0px);
-    }
-    .selected {
-      code { color: #eee; }
-      background: #333;
     }
   }
   .register-court {
@@ -220,7 +199,7 @@ export default {
         border: none;
         border-radius: 8px;
         padding: 5px 10px;
-        margin: 5px 0 25px;
+        margin: 5px 0 10px;
         &:focus { outline: none; }
       }
       input {
@@ -228,7 +207,34 @@ export default {
       }
       select {
         @include defaultInput();
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        text-indent: 1px;
+        text-overflow: '';
       }
+      .insert-place {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        span {
+          color: #757575;
+          position: absolute;
+          top: 13px;
+          left: 13px;
+          z-index: 100;
+        }
+        .deletePlaceholder {
+          display: none;
+        }
+      }
+    }
+    .confirm-btn {
+      color: #262626;
+      background: transparent;
+      border: 1px solid #262626;
+      border-radius: 100px;
+      padding: 5px 18px;
+      &:focus { outline: none; }
     }
   }
   .sign-out {
