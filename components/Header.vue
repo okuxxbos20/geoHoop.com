@@ -1,6 +1,6 @@
 <template>
-  <div class="header">
-    <p class="title">geoHoops</p>
+  <div class="header conatiner">
+    <p class="title">geoHoop</p>
     <div class="right-box">
       <p
         v-if="!isAlreadyLogin"
@@ -180,26 +180,20 @@ export default {
 <style lang="scss" scoped>
 .header {
   width: 100%;
-  height: 72px;
+  height: 40px;
   background: transparent;
-  padding: 0 100px;
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   align-items: center;
   position: absolute;
   top: 0;
   .title {
     color: #eee;
-    padding: 5px 10px;
-    position: absolute;
-    top: 25px;
-    left: 0;
-    margin-left: 40px;
+    margin: 0 0 0 10px;
   }
   .right-box {
-    position: absolute;
-    right: 0;
-    margin-right: 20px;
+    margin: 8px 10px 0 0;
     .not-login {
       color: #fff;
       transition: 200ms;

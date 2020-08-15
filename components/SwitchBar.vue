@@ -3,16 +3,16 @@
     <div
       class="bookamrks"
       :class="{ selected: isBookmarkSelected }"
-      @click="changeStatus()"
+      @click="changeStatus('bookmarks')"
     >
       <code>ブックマーク</code>
     </div>
     <div
       class="register"
       :class="{ selected: !isBookmarkSelected }"
-      @click="changeStatus()"
+      @click="changeStatus('register')"
     >
-      <code>コートを登録!</code>
+      <code>コートを登録</code>
     </div>
   </div>
 </template>
@@ -27,8 +27,8 @@ export default {
     }
   },
   methods: {
-    changeStatus() {
-      this.$emit('changeStatus');
+    changeStatus(status) {
+      this.$emit('changeStatus', status);
     }
   }
 }

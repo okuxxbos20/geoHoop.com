@@ -27,7 +27,7 @@
             </select>
           </div>
           <button type="button">
-            <SearchIcon class="search-icon" />
+            <SearchIcon class="search-icon" @click="searchCourt()" />
           </button>
         </div>
       </form>
@@ -70,6 +70,9 @@ export default {
     getCity(id) {
       this.query.city = this.cities.filter((v) => v.id === id)[0].name;
       console.log(this.query);
+    },
+    searchCourt() {
+      this.$emit('searchCourt', query);
     }
   }
 }
@@ -79,7 +82,7 @@ export default {
 .search-wrapper {
   width: 100%;
   height: 300px;
-  background-image: url('../assets/img/court.jpeg');
+  background-image: url('../assets/img/sunset.jpg');
   background-position: center;
   background-size: cover;
   display: flex;
@@ -88,6 +91,8 @@ export default {
   .search-box {
     background: #fff;
     border-radius: 100px;
+    width: 95%;
+    max-width: 360px;
     height: 70px;
     // margin: 0 10px;
     // opacity: 0.9;
@@ -96,6 +101,9 @@ export default {
       .input-place {
         display: flex;
         flex-direction: row;
+        @media (max-width: 450px) {
+          flex-direction: column;
+        }
         justify-content: center;
         align-items: center;
         select {

@@ -1,7 +1,7 @@
 <template>
   <div>
     <Header />
-    <SearchForm />
+    <SearchForm @searchCourt="searchCourt()" />
     <main class="container">
       <div class="divider">
         <p>search result</p>
@@ -27,6 +27,7 @@
         </div>
       </div>
     </main>
+    <FooterDefault />
   </div>
 </template>
 
@@ -65,6 +66,7 @@ main {
   background: #fff;
   width: 100%;
   padding: 0;
+  margin-bottom: 30px;
   .divider {
     margin: 25px 0;
     p {

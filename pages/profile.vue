@@ -11,9 +11,9 @@
     </div>
     <SwitchBar
       :is-bookmark-selected="isBookmarkSelected"
-      @changeStatus="isBookmarkSelected = !isBookmarkSelected"
+      @changeStatus="changeStatus"
     />
-    <div v-if="isBookmarkSelected" class="">
+    <div v-if="isBookmarkSelected" class="your-bookmarks">
       <p class="sign-out" @click="logoutUser()">サインアウト</p>
     </div>
     <div v-if="!isBookmarkSelected" class="register-court">
@@ -98,7 +98,7 @@ export default {
     return {
       lookUpId: '',
       user: '',
-      isBookmarkSelected: false,
+      isBookmarkSelected: true,
       prefectures: [],
       cities: [],
       // about court
@@ -122,10 +122,6 @@ export default {
   mounted() {
     this.prefectures = prefecturesjson.prefectures;
     this.prefectures.map((v) => v.isSelected = false);
-    // this.prefectures.map((v) => {
-    //   if (v.code === '13') v.isSelected = true;
-    // });
-    // this.cities = cityjson.filter((v) => v.id === '13')[0].cities;
   },
   methods: {
     getUser(id) {
@@ -150,6 +146,9 @@ export default {
     },
     getHowManyCourt(num) {
       this.court.howManyCourt = num;
+    },
+    changeStatus(status) {
+      this.isBookmarkSelected = (status === 'bookmarks') ? true : false;
     }
   }
 }
@@ -175,6 +174,20 @@ export default {
     .user-email {
       color: #aaa;
       margin: 0;
+    }
+  }
+  .your-bookmarks {
+    display: flex;
+    flex-direction: column;
+    .sign-out {
+      color: #aaa;
+      font-size: 12px;
+      transition: 200ms;
+      text-align: center;
+      &:hover {
+        // border-bottom: 1px solid #aaa;
+        cursor: pointer;
+      }
     }
   }
   .register-court {
@@ -235,16 +248,6 @@ export default {
       border-radius: 100px;
       padding: 5px 18px;
       &:focus { outline: none; }
-    }
-  }
-  .sign-out {
-    color: #aaa;
-    font-size: 12px;
-    transition: 200ms;
-    text-align: center;
-    &:hover {
-      border-bottom: 1px solid #aaa;
-      cursor: pointer;
     }
   }
 }
