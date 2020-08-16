@@ -3,7 +3,6 @@
     <div class="items">
       <p>about</p>
       <p>legal</p>
-      <p>help</p>
     </div>
     <p class="copylight">
       <small lang="en">©2020 geoHoop.com</small>
