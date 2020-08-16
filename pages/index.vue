@@ -1,12 +1,12 @@
 <template>
   <div>
     <Header />
-    <SearchForm @searchCourt="searchCourt()" />
+    <SearchForm @searchCourt="searchCourt" />
     <main class="container">
       <div class="divider">
         <p>search result</p>
       </div>
-      <div class="search-result">
+      <div v-if="courts.length > 0" class="search-result">
         <div
           v-for="(court, idx) in courts"
           :key="idx"
@@ -25,6 +25,9 @@
           </div>
           <img :src="court.img[0]">
         </div>
+      </div>
+      <div v-if="courts.length === 0" class="no-search-result">
+        <p>指定した地区にコートはありませんでした。</p>
       </div>
     </main>
     <FooterDefault />
@@ -56,6 +59,20 @@ export default {
   methods: {
     moveTo(id) {
       this.$router.push({ name: 'court', query: { id: id } });
+    },
+    searchCourt(query) {
+      console.log(query);
+      this.courts = [];
+      db.collection('court')
+      .where('prefecture', '==', query.prefecture)
+      .where('city', '==', query.city)
+      .get().then((court) => {
+        court.forEach((v) => {
+          this.courts = [...this.courts, v.data()];
+        });
+      }).catch((error) => {
+        console.log(error);
+      });
     }
   }
 }
