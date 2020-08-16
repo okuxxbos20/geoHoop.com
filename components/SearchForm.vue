@@ -26,8 +26,8 @@
               </option>
             </select>
           </div>
-          <button type="button">
-            <SearchIcon class="search-icon" @click="searchCourt()" />
+          <button type="button" @click="searchCourt()">
+            <SearchIcon class="search-icon" />
           </button>
         </div>
       </form>
@@ -69,10 +69,9 @@ export default {
     },
     getCity(id) {
       this.query.city = this.cities.filter((v) => v.id === id)[0].name;
-      console.log(this.query);
     },
     searchCourt() {
-      this.$emit('searchCourt', query);
+      this.$emit('searchCourt', this.query);
     }
   }
 }
