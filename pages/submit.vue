@@ -1,13 +1,17 @@
 <template>
   <div class="court-form container">
     <p class="db-title">DB登録用フォーム</p>
-    <form>
+    <form @submit.prevent="submitData()">
       <div class="insert-place court-name">
-        <label>コートの名称</label>
-        <input v-model="court.name" type="text" placeholder="◯◯公園">
+        <label :class="{ error: error.name !== 'コートの名称' }">
+          {{ error.name }}
+        </label>
+        <input v-model="court.name" type="text" placeholder="◯◯公園" autofocus>
       </div>
       <div class="insert-place select-prefecture">
-        <label>都道府県</label>
+        <label :class="{ error: error.prefecture !== '都道府県' }">
+          {{ error.prefecture }}
+        </label>
         <span :class="{ deletePlaceholder: true }">都道府県を選択</span>
         <select @change="getPrefecture($event.target.value)">
           <option value="" style="display: none;"></option>
@@ -22,8 +26,10 @@
         </select>
       </div>
       <div class="insert-place select-city">
-        <label>市町村区</label>
-        <span :class="{ deletePlaceholder: true }">地域を選択</span>
+        <label :class="{ error: error.city !== '市町村区' }">
+          {{ error.city }}
+        </label>
+        <span :class="{ deletePlaceholder: true }">市町村区を選択</span>
         <select @change="getCity($event.target.value)">
           <option
             v-for="city in cities"
@@ -35,7 +41,9 @@
         </select>
       </div>
       <div class="insert-place">
-        <label>ゴールの数</label>
+        <label :class="{ error: error.howManyGoal !== 'ゴールの数' }">
+          {{ error.howManyGoal }}
+        </label>
         <span :class="{ deletePlaceholder: true }">ゴールの数を選択</span>
         <select @change="getHowManyCourt($event.target.value)">
           <option value="" style="display: none;"></option>
@@ -50,31 +58,55 @@
         </select>
       </div>
       <div class="insert-place">
-        <label>緯度と経度</label>
+        <label :class="{ error: error.geo !== '緯度と経度' }">
+          {{ error.geo }}
+        </label>
         <div class="lat-lng">
-          <input type="text" class="lat" />
-          <input type="text" class="lng" />
+          <input
+            v-model.number="court.geo.df"
+            type="number"
+            class="lat"
+            placeholder="緯度"
+          />
+          <input
+            v-model.number="court.geo.ff"
+            type="number"
+            class="lng"
+            placeholder="経度"
+          />
         </div>
       </div>
       <div class="insert-place">
-        <label>Goole MapsのURL</label>
-        <input type="text" />
+        <label :class="{ error: error.googleMapsUrl !== 'GooleMapsのURL' }">
+          {{ error.googleMapsUrl }}
+        </label>
+        <input v-model="court.googleMapsUrl" type="text" />
       </div>
       <div class="insert-place">
-        <label>外用か中用か</label>
+        <label :class="{ error: error.isOutside !== '屋外か屋内か' }">
+          {{ error.isOutside }}
+        </label>
         <div class="inside-outside">
-          <div class="">
-            <span>外用</span>
-            <input type="radio">
+          <div class="item">
+            <input
+              v-model="court.isOutside"
+              type="radio"
+              value="true"
+            >
+            <label>屋外</label>
           </div>
-          <div class="">
-            <span>外用</span>
-            <input type="radio">
+          <div class="item">
+            <input
+              v-model="court.isOutside"
+              type="radio"
+              value="false"
+            >
+            <label>屋内</label>
           </div>
         </div>
       </div>
+      <button type="submit" class="submit-db">DBに送る</button>
     </form>
-    <button type="button" class="submit-db">DBに送る</button>
   </div>
 </template>
 
@@ -91,16 +123,25 @@ export default {
       cities: [],
       court: {
         bookmarks: 0,
-        city: '',
-        geo: [],
+        city: null,
+        geo: { df: '', ff: '' },
         googleMapsUrl: '',
-        id: '',
+        id: null,
         img: [],
         isOutside: null,
         likes: 0,
         name: '',
-        prefecture: '',
+        prefecture: null,
         howManyGoal: null,
+      },
+      error: {
+        name: 'コートの名称',
+        prefecture: '都道府県',
+        city: '市町村区',
+        geo: '緯度と経度',
+        howManyGoal: 'ゴールの数',
+        googleMapsUrl: 'GooleMapsのURL',
+        isOutside: '屋外か屋内か'
       }
     }
   },
@@ -123,6 +164,32 @@ export default {
     },
     getCity(id) {
       this.court.city = this.cities.filter((v) => v.id === id)[0].name;
+    },
+    getHowManyCourt(num) {
+      this.court.howManyGoal = num;
+    },
+    submitData() {
+      this.error.name = this.court.name === '' ? '*コート名を入力してください' : 'コートの名称';
+      this.error.prefecture = this.court.prefecture === null ? '*都道府県を選択してください' : '都道府県';
+      this.error.city = this.court.city === null ? '*市町村区を選択してください' : '市町村区';
+      this.error.howManyGoal = this.court.howManyGoal === null ? '*ゴールの数を選択してください' : 'ゴールの数';
+      this.error.isOutside = this.court.isOutside === null ? '*どちらかを選択してください' : '屋外か屋内か';
+      const startUrl = 'https://www.google.com/maps/place';
+      if (this.court.googleMapsUrl === '') {
+        this.error.googleMapsUrl = '*GoogleMapsのURLを入力してください';
+      } else if (!this.court.googleMapsUrl.startsWith(startUrl)) {
+        this.error.googleMapsUrl = '*正しいGoogleMapsのURLを入力してください';
+      }
+      if (this.court.geo.df === '' && this.court.geo.ff === '') {
+        this.error.geo = '緯度と経度を入力してください';
+      } else if (this.court.geo.df === '' && this.court.geo.ff !== '') {
+        this.error.geo = '緯度を入力してください';
+      } else if (this.court.geo.df !== '' && this.court.geo.ff === '') {
+        this.error.geo = '経度を入力してください';
+      } else if (this.court.geo.df !== '' && this.court.geo.ff !== '') {
+        this.error.geo = '緯度と経度';
+      }
+      console.log(this.court);
     }
   }
 }
@@ -173,6 +240,9 @@ export default {
       display: flex;
       flex-direction: column;
       position: relative;
+      .error {
+        color: red;
+      }
       span {
         color: #757575;
         position: absolute;
@@ -192,7 +262,14 @@ export default {
       .inside-outside {
         display: flex;
         flex-direction: row;
-        width: 50%;
+        justify-content: space-around;
+        .item {
+          // width: 50%;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          input { margin: 0; }
+        }
       }
     }
   }
@@ -204,6 +281,7 @@ export default {
     border-radius: 100px;
     width: 180px;
     margin: 30px auto;
+    &:focus { outline: none; }
   }
 }
 </style>
