@@ -12,7 +12,11 @@
         <label :class="{ error: error.prefecture !== '都道府県' }">
           {{ error.prefecture }}
         </label>
-        <span :class="{ deletePlaceholder: true }">都道府県を選択</span>
+        <span
+          :class="{ deletePlaceholder: court.prefecture !== null }"
+        >
+          都道府県を選択
+        </span>
         <select @change="getPrefecture($event.target.value)">
           <option value="" style="display: none;"></option>
           <option
@@ -29,7 +33,11 @@
         <label :class="{ error: error.city !== '市町村区' }">
           {{ error.city }}
         </label>
-        <span :class="{ deletePlaceholder: true }">市町村区を選択</span>
+        <span
+          :class="{ deletePlaceholder: court.city !== null }"
+        >
+          市町村区を選択
+        </span>
         <select @change="getCity($event.target.value)">
           <option
             v-for="city in cities"
@@ -44,7 +52,11 @@
         <label :class="{ error: error.howManyGoal !== 'ゴールの数' }">
           {{ error.howManyGoal }}
         </label>
-        <span :class="{ deletePlaceholder: true }">ゴールの数を選択</span>
+        <span
+          :class="{ deletePlaceholder: court.howManyGoal !== null }"
+        >
+          ゴールの数を選択
+        </span>
         <select @change="getHowManyCourt($event.target.value)">
           <option value="" style="display: none;"></option>
           <option value="1">1</option>
@@ -80,6 +92,11 @@
         <label :class="{ error: error.googleMapsUrl !== 'GooleMapsのURL' }">
           {{ error.googleMapsUrl }}
         </label>
+        <span
+          :class="{ deletePlaceholder: court.googleMapsUrl !== '' }"
+        >
+          https://www.google.com/...
+        </span>
         <input v-model="court.googleMapsUrl" type="text" />
       </div>
       <div class="insert-place">
@@ -246,8 +263,8 @@ export default {
       span {
         color: #757575;
         position: absolute;
-        top: 13px;
-        left: 13px;
+        top: 35px;
+        left: 12px;
         z-index: 100;
       }
       .deletePlaceholder { display: none; }
