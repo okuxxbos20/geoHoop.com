@@ -1,7 +1,7 @@
 <template>
   <div class="court-form container">
-    <p class="db-title">DB登録用フォーム</p>
     <form @submit.prevent="submitData()">
+      <p class="db-title">DB登録用フォーム</p>
       <div class="insert-place court-name">
         <label :class="{ error: error.name !== 'コートの名称' }">
           {{ error.name }}
@@ -69,7 +69,7 @@
           <option value="8+">8以上</option>
         </select>
       </div>
-      <div class="insert-place">
+      <!-- <div class="insert-place">
         <label :class="{ error: error.geo !== '緯度と経度' }">
           {{ error.geo }}
         </label>
@@ -87,6 +87,17 @@
             placeholder="経度"
           />
         </div>
+      </div> -->
+      <div class="insert-place">
+        <label :class="{ error: error.embedSrc !== 'htmlのsrc=の箇所' }">
+          {{ error.embedSrc }}
+        </label>
+        <span
+          :class="{ deletePlaceholder: court.embedSrc !== null }"
+        >
+          https://www.google.com/...
+        </span>
+        <input v-model="court.embedSrc" type="text" />
       </div>
       <div class="insert-place">
         <label :class="{ error: error.googleMapsUrl !== 'GooleMapsのURL' }">
@@ -122,7 +133,13 @@
           </div>
         </div>
       </div>
-      <button type="submit" class="submit-db">DBに送る</button>
+      <button
+        type="submit"
+        class="submit-db"
+        :class="{ isAbleToSubmit: isAbleToSubmit }"
+      >
+        DBに送る
+      </button>
     </form>
   </div>
 </template>
@@ -134,6 +151,11 @@ import cityjson from '@/assets/json/city.json';
 const db = firebase.firestore();
 
 export default {
+  head() {
+    return {
+      title: 'form'
+    }
+  },
   data() {
     return {
       prefectures: [],
@@ -141,6 +163,7 @@ export default {
       court: {
         bookmarks: 0,
         city: null,
+        embedSrc: null,
         geo: { df: '', ff: '' },
         googleMapsUrl: '',
         id: null,
@@ -157,9 +180,12 @@ export default {
         city: '市町村区',
         geo: '緯度と経度',
         howManyGoal: 'ゴールの数',
+        embedSrc: 'htmlのsrc=の箇所',
         googleMapsUrl: 'GooleMapsのURL',
         isOutside: '屋外か屋内か'
-      }
+      },
+      isAbleToSubmit: false
+      // 全てのバリデーションをパスしたらtrueにする
     }
   },
   watch: {
@@ -190,13 +216,7 @@ export default {
       this.error.prefecture = this.court.prefecture === null ? '*都道府県を選択してください' : '都道府県';
       this.error.city = this.court.city === null ? '*市町村区を選択してください' : '市町村区';
       this.error.howManyGoal = this.court.howManyGoal === null ? '*ゴールの数を選択してください' : 'ゴールの数';
-      this.error.isOutside = this.court.isOutside === null ? '*どちらかを選択してください' : '屋外か屋内か';
-      const startUrl = 'https://www.google.com/maps/place';
-      if (this.court.googleMapsUrl === '') {
-        this.error.googleMapsUrl = '*GoogleMapsのURLを入力してください';
-      } else if (!this.court.googleMapsUrl.startsWith(startUrl)) {
-        this.error.googleMapsUrl = '*正しいGoogleMapsのURLを入力してください';
-      }
+
       if (this.court.geo.df === '' && this.court.geo.ff === '') {
         this.error.geo = '緯度と経度を入力してください';
       } else if (this.court.geo.df === '' && this.court.geo.ff !== '') {
@@ -206,6 +226,22 @@ export default {
       } else if (this.court.geo.df !== '' && this.court.geo.ff !== '') {
         this.error.geo = '緯度と経度';
       }
+
+      const startMapsUrl = 'https://www.google.com/maps/place';
+      if (this.court.googleMapsUrl === '') {
+        this.error.googleMapsUrl = '*GoogleMapsのURLを入力してください';
+      } else if (!this.court.googleMapsUrl.startsWith(startMapsUrl)) {
+        this.error.googleMapsUrl = '*正しいGoogleMapsのURLを入力してください';
+      }
+
+      const startSrcUrl = 'https://www.google.com/maps/embed';
+      if (this.court.embedSrc === null) {
+        this.error.embedSrc = '*GoogleMapsのsrc=以下を入力してください';
+      } else if (!this.court.embedSrc.startsWith(startSrcUrl)) {
+        this.error.embedSrc = '*正しいsrcを入力してください';
+      }
+
+      this.error.isOutside = this.court.isOutside === null ? '*どちらかを選択してください' : '屋外か屋内か';
       console.log(this.court);
     }
   }
@@ -217,17 +253,17 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  .db-title {
-    color: #262626;
-    text-align: center;
-    margin: 20px 0;
-  }
   form {
     display: flex;
     flex-direction: column;
-    margin: 0 auto;
+    margin: 10px auto 0;
     width: 100%;
     max-width: 500px;
+    .db-title {
+      color: #262626;
+      text-align: center;
+      margin: 20px 0;
+    }
     label {
       font-size: 15px;
       text-align: left;
@@ -265,7 +301,6 @@ export default {
         position: absolute;
         top: 35px;
         left: 12px;
-        z-index: 100;
       }
       .deletePlaceholder { display: none; }
       .lat-lng {
@@ -299,6 +334,10 @@ export default {
     width: 180px;
     margin: 30px auto;
     &:focus { outline: none; }
+  }
+  .isAbleToSubmit {
+    color: #fff;
+    background: #262626;
   }
 }
 </style>
