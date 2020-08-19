@@ -1,6 +1,9 @@
 <template>
   <div class="court">
-    <Header />
+    <Header
+      :geoHoop="geoHoop"
+      :background="background"
+    />
     <main>
       <div class="name">
         <p>{{ court.name }}</p>
@@ -8,7 +11,7 @@
     </main>
     <iframe :src="court.embedSrc" class="maps">
     </iframe>
-    <p>{{ court }}</p>
+    <!-- <p>{{ court }}</p> -->
   </div>
 </template>
 
@@ -35,7 +38,9 @@ export default {
   },
   data() {0
     return {
-      court: ''
+      court: '',
+      geoHoop: '#262626',
+      background: '#fff'
     };
   }
 }

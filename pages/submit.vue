@@ -1,7 +1,7 @@
 <template>
   <div class="court-form container">
     <header>
-      <p class="geo-hoop" @click="moveTo()">geoHoop</p>
+      <p class="geo-hoop" @click="moveTo('/')">geoHoop</p>
     </header>
     <form @submit.prevent="submitData()">
       <p class="db-title">DB登録用フォーム</p>
@@ -235,8 +235,8 @@ export default {
     this.prefectures.map((v) => v.isSelected = false);
   },
   methods: {
-    moveTo() {
-      this.$router.push('/');
+    moveTo(to) {
+      this.$router.push(to);
     },
     getPrefecture(code) {
       this.cities = cityjson.filter((v) => v.id === code)[0].cities;
