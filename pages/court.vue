@@ -1,20 +1,17 @@
 <template>
-  <div class="">
-    <GmapMap
-      :center="center"
-      :zoom="14"
-      style="width: 100%; height: 300px"
-    >
-      <!-- <GmapMarker
-        :key="index"
-        v-for="(m, index) in markers"
-        :position="m.position"
-        :clickable="true"
-        :draggable="true"
-        @click="center=m.position"
-      /> -->
-    </GmapMap>
-    <p>{{ court }}</p>
+  <div class="court">
+    <Header
+      :geoHoop="geoHoop"
+      :background="background"
+    />
+    <main>
+      <div class="name">
+        <p>{{ court.name }}</p>
+      </div>
+    </main>
+    <iframe :src="court.embedSrc" class="maps">
+    </iframe>
+    <!-- <p>{{ court }}</p> -->
   </div>
 </template>
 
@@ -29,26 +26,35 @@ export default {
       .then(court => {
         this.court = court.data();
         console.log(this.court);
-        this.center = {
-          lat: court.data().geo.df,
-          lng: court.data().geo.ff
-        };
       })
       .catch(error => {
         console.log(error);
       });
   },
+  head() {
+    return {
+      title: this.court.name
+    }
+  },
   data() {0
     return {
       court: '',
-      center: { lat: 35.682663, lng: 139.7149979 },
-      // markers: [
-      //   { position: { lat: 35.682663, lng: 139.7149979 } }
-      // ]
+      geoHoop: '#262626',
+      background: '#fff'
     };
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.court {
+  main {
+    margin: 40px 0;
+  }
+  .maps {
+    width: 100%;
+    height: 400px;
+    border: none;
+  }
+}
 </style>
