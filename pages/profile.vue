@@ -1,7 +1,7 @@
 <template>
   <div class="profile">
     <header>
-      <p>this is header.</p>
+      <p @click="moveTo()">geoHoop</p>
     </header>
     <div class="basic-info">
       <img v-if="user.img" class="profile-img" :src="user.img">
@@ -94,6 +94,11 @@ export default {
       }
     });
   },
+  head() {
+    return {
+      title: 'プロフィール'
+    }
+  },
   data() {
     return {
       lookUpId: '',
@@ -124,6 +129,9 @@ export default {
     this.prefectures.map((v) => v.isSelected = false);
   },
   methods: {
+    moveTo() {
+      this.$router.push('/');
+    },
     getUser(id) {
       db.collection('users').doc(id).get().then(user => {
         this.user = user.data();
