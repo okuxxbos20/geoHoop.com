@@ -1,18 +1,21 @@
 <template>
-  <div class="header conatiner">
-    <p class="title">geoHoop</p>
+  <div class="header conatiner" :style="{ background: background }">
+    <div @click="moveTo('/')">
+      <p class="geo-hoop" :style="{ color: geoHoop }">geoHoop</p>
+    </div>
     <div class="right-box">
       <p
         v-if="!isAlreadyLogin"
         class="not-login"
         @click="isLoginformOpen = true"
+        :style="{ color: geoHoop }"
       >
         Login
       </p>
       <div
         v-if="isAlreadyLogin"
         class="aleady-login"
-        @click="moveToProfile()"
+        @click="moveTo('profile')"
       >
         <img v-if="!user.img" src="@/assets/img/avatar.png">
         <img v-if="user.img" :src="user.img">
@@ -62,6 +65,18 @@ const auth = firebase.auth();
 
 export default {
   components: { GoogleIcon },
+  props: {
+    geoHoop: {
+      type: String,
+      required: false,
+      default: '#eee'
+    },
+    background: {
+      type: String,
+      required: false,
+      default: 'transparent'
+    }
+  },
   data() {
     return {
       isAlreadyLogin: false,
@@ -98,6 +113,9 @@ export default {
     });
   },
   methods: {
+    moveTo(to) {
+      this.$router.push(to);
+    },
     submitForm() {
       if (!this.isLoginForm && !this.isAlreadyLogin) {
         this.registerUser();
@@ -170,9 +188,6 @@ export default {
         this.isError = true;
         this.error = error.message;
       });
-    },
-    moveToProfile() {
-      this.$router.push('profile');
     }
   }
 }
@@ -189,9 +204,12 @@ export default {
   align-items: center;
   position: absolute;
   top: 0;
-  .title {
+  z-index: 1000;
+  .geo-hoop {
     color: #eee;
     margin: 0 0 0 10px;
+    transition: 200ms;
+    &:hover { cursor: pointer; }
   }
   .right-box {
     margin: 8px 10px 0 0;
