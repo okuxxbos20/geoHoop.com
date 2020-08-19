@@ -1,5 +1,11 @@
 <template>
-  <div class="">
+  <div class="court">
+    <Header />
+    <main>
+      <div class="name">
+        <p>{{ court.name }}</p>
+      </div>
+    </main>
     <iframe :src="court.embedSrc" class="maps">
     </iframe>
     <p>{{ court }}</p>
@@ -36,9 +42,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.maps {
-  width: 100%;
-  height: 400px;
-  border: none;
+.court {
+  main {
+    margin: 40px 0;
+  }
+  .maps {
+    width: 100%;
+    height: 400px;
+    border: none;
+  }
 }
 </style>
