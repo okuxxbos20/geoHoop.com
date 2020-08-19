@@ -2,12 +2,14 @@
   <div class="court-form container">
     <form @submit.prevent="submitData()">
       <p class="db-title">DB登録用フォーム</p>
+      <!-- コートの名称 -->
       <div class="insert-place court-name">
         <label :class="{ error: error.name !== 'コートの名称' }">
           {{ error.name }}
         </label>
         <input v-model="court.name" type="text" placeholder="◯◯公園" autofocus>
       </div>
+      <!-- 都道府県 -->
       <div class="insert-place select-prefecture">
         <label :class="{ error: error.prefecture !== '都道府県' }">
           {{ error.prefecture }}
@@ -29,6 +31,7 @@
           </option>
         </select>
       </div>
+      <!-- 市町村区 -->
       <div class="insert-place select-city">
         <label :class="{ error: error.city !== '市町村区' }">
           {{ error.city }}
@@ -48,6 +51,14 @@
           </option>
         </select>
       </div>
+      <!-- 連絡先 -->
+      <div class="insert-place">
+        <label :class="{ error: error.tel !== '連絡先' }">
+          {{ error.tel }}
+        </label>
+        <input v-model="court.tel" type="text" placeholder="09012345678">
+      </div>
+      <!-- ゴールの数 -->
       <div class="insert-place">
         <label :class="{ error: error.howManyGoal !== 'ゴールの数' }">
           {{ error.howManyGoal }}
@@ -69,6 +80,7 @@
           <option value="8+">8以上</option>
         </select>
       </div>
+      <!-- 緯度と経度 -->
       <!-- <div class="insert-place">
         <label :class="{ error: error.geo !== '緯度と経度' }">
           {{ error.geo }}
@@ -88,6 +100,7 @@
           />
         </div>
       </div> -->
+      <!-- 地図情報 -->
       <div class="insert-place">
         <label :class="{ error: error.embedSrc !== 'htmlのsrc=の箇所' }">
           {{ error.embedSrc }}
@@ -99,6 +112,7 @@
         </span>
         <input v-model="court.embedSrc" type="text" />
       </div>
+      <!-- GoogleMapsのURL -->
       <div class="insert-place">
         <label :class="{ error: error.googleMapsUrl !== 'GooleMapsのURL' }">
           {{ error.googleMapsUrl }}
@@ -110,6 +124,7 @@
         </span>
         <input v-model="court.googleMapsUrl" type="text" />
       </div>
+      <!-- 屋内か屋外か -->
       <div class="insert-place">
         <label :class="{ error: error.isOutside !== '屋外か屋内か' }">
           {{ error.isOutside }}
@@ -132,6 +147,18 @@
             <label>屋内</label>
           </div>
         </div>
+      </div>
+      <!-- 参考URL -->
+      <div class="insert-place">
+        <label :class="{ error: error.refUrl !== '参考URL' }">
+          {{ error.refUrl }}
+        </label>
+        <span
+          :class="{ deletePlaceholder: court.refUrl !== null }"
+        >
+          https://...
+        </span>
+        <input v-model="court.refUrl" type="text" />
       </div>
       <button
         type="submit"
@@ -166,13 +193,15 @@ export default {
         embedSrc: null,
         geo: { df: '', ff: '' },
         googleMapsUrl: '',
+        howManyGoal: null,
         id: null,
         img: [],
         isOutside: null,
         likes: 0,
-        name: '',
+        name: null,
         prefecture: null,
-        howManyGoal: null,
+        refUrl: null,
+        tel: null
       },
       error: {
         name: 'コートの名称',
@@ -182,7 +211,9 @@ export default {
         howManyGoal: 'ゴールの数',
         embedSrc: 'htmlのsrc=の箇所',
         googleMapsUrl: 'GooleMapsのURL',
-        isOutside: '屋外か屋内か'
+        isOutside: '屋外か屋内か',
+        refUrl: '参考URL',
+        tel: '連絡先'
       },
       isAbleToSubmit: false
       // 全てのバリデーションをパスしたらtrueにする
