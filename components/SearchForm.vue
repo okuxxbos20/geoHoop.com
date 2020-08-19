@@ -80,7 +80,7 @@ export default {
 <style lang="scss" scoped>
 .search-wrapper {
   width: 100%;
-  height: 300px;
+  height: 400px;
   background-image: url('../assets/img/sunset.jpg');
   background-position: center;
   background-size: cover;
@@ -93,7 +93,7 @@ export default {
     width: 95%;
     max-width: 360px;
     height: 70px;
-    // margin: 0 10px;
+    // margin-top: 70px;
     // opacity: 0.9;
     form {
       margin: 0 auto;
