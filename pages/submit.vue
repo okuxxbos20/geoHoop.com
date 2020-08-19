@@ -1,5 +1,8 @@
 <template>
   <div class="court-form container">
+    <header>
+      <p class="geo-hoop" @click="moveTo()">geoHoop</p>
+    </header>
     <form @submit.prevent="submitData()">
       <p class="db-title">DB登録用フォーム</p>
       <!-- コートの名称 -->
@@ -232,6 +235,9 @@ export default {
     this.prefectures.map((v) => v.isSelected = false);
   },
   methods: {
+    moveTo() {
+      this.$router.push('/');
+    },
     getPrefecture(code) {
       this.cities = cityjson.filter((v) => v.id === code)[0].cities;
       this.court.prefecture = this.prefectures.filter((v) => v.code === code)[0].name;
@@ -284,6 +290,21 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  header {
+    height: 30px;
+    .geo-hoop {
+      color: #262626;
+      width: 70px;
+      text-align: center;
+      margin: 10px 0 0 0;
+      padding-bottom: 2px;
+      transition: 200ms;
+      &:hover {
+        cursor: pointer;
+        border-bottom: 1px solid #262626;
+      }
+    }
+  }
   form {
     display: flex;
     flex-direction: column;

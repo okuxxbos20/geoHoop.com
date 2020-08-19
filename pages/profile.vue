@@ -1,7 +1,7 @@
 <template>
-  <div class="profile">
+  <div class="profile container">
     <header>
-      <p @click="moveTo()">geoHoop</p>
+      <p class="geo-hoop" @click="moveTo()">geoHoop</p>
     </header>
     <div class="basic-info">
       <img v-if="user.img" class="profile-img" :src="user.img">
@@ -165,6 +165,21 @@ export default {
 <style lang="scss" scoped>
 .profile {
   margin-bottom: 50px;
+  header {
+    height: 30px;
+    .geo-hoop {
+      color: #262626;
+      width: 70px;
+      text-align: center;
+      margin: 10px 0 0 0;
+      padding-bottom: 2px;
+      transition: 200ms;
+      &:hover {
+        cursor: pointer;
+        border-bottom: 1px solid #262626;
+      }
+    }
+  }
   .basic-info {
     color: #262626;
     display: flex;
