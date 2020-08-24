@@ -31,7 +31,9 @@
           <input v-model="court.name" type="text" placeholder="◯◯公園">
         </div>
         <div class="insert-place select-prefecture">
-          <span :class="{ deletePlaceholder: true }">都道府県を選択</span>
+          <span :class="{ deletePlaceholder: court.prefecture !== null }">
+            都道府県を選択
+          </span>
           <select @change="getPrefecture($event.target.value)">
             <option value="" style="display: none;"></option>
             <option
@@ -45,7 +47,9 @@
           </select>
         </div>
         <div class="insert-place select-city">
-          <span :class="{ deletePlaceholder: true }">地域を選択</span>
+          <span :class="{ deletePlaceholder: court.city !== null }">
+            地域を選択
+          </span>
           <select @change="getCity($event.target.value)">
             <option
               v-for="city in cities"
@@ -57,7 +61,9 @@
           </select>
         </div>
         <div class="insert-place">
-          <span :class="{ deletePlaceholder: true }">ゴールの数を選択</span>
+          <span :class="{ deletePlaceholder: court.howManyCourt !== null }">
+            ゴールの数を選択
+          </span>
           <select @change="getHowManyCourt($event.target.value)">
             <option value="" style="display: none;"></option>
             <option value="1">1</option>
@@ -97,8 +103,8 @@ export default {
       // about court
       court: {
         name: '',
-        prefecture: '東京都',
-        city: '千代田区',
+        prefecture: null,
+        city: null,
         howManyCourt: null,
         img: []
       }
