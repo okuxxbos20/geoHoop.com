@@ -4,16 +4,22 @@
       <p class="geo-hoop" @click="moveTo()">geoHoop</p>
     </header>
     <div class="basic-info">
-      <img v-if="user.img" class="profile-img" :src="user.img">
-      <img v-if="!user.img" class="profile-img" src="@/assets/img/avatar.png">
-      <h2 class="user-name">{{ user.name }}</h2>
-      <p class="user-email">{{ user.email }}</p>
+      <img v-if="userData.img" class="profile-img" :src="userData.img">
+      <img v-if="!userData.img" class="profile-img" src="@/assets/img/avatar.png">
+      <h2 class="user-name">{{ userData.name }}</h2>
+      <p class="user-email">{{ userData.email }}</p>
     </div>
     <SwitchBar
       :is-bookmark-selected="isBookmarkSelected"
       @changeStatus="changeStatus"
     />
     <div v-if="isBookmarkSelected" class="your-bookmarks">
+      <!-- <div v-if="!userData.bookmarks">
+        <p>まだブックマークがありません</p>
+      </div>
+      <div v-if="userData.bookmarks.length !== 0">
+        <p>ブックマークは以下の通りです</p>
+      </div> -->
       <p class="sign-out" @click="logoutUser()">サインアウト</p>
     </div>
     <div v-if="!isBookmarkSelected" class="register-court">
@@ -73,27 +79,8 @@ import firebase from 'firebase';
 import prefecturesjson from '@/assets/json/prefecture.json';
 import cityjson from '@/assets/json/city.json';
 const auth = firebase.auth();
-const db = firebase.firestore();
 
 export default {
-  async created() {
-    await auth.onAuthStateChanged((user) => {
-      const provider = user.providerData[0].providerId;
-      if (user) {
-        if (provider === 'google.com') {
-          console.log('google');
-          this.lookUpId = user.uid;
-          this.getUser(this.lookUpId);
-        } else {
-          console.log('mail');
-          this.lookUpId = user.uid;
-          this.getUser(this.lookUpId);
-        }
-      } else {
-        this.id = 'please log in...';
-      }
-    });
-  },
   head() {
     return {
       title: 'プロフィール'
@@ -101,8 +88,6 @@ export default {
   },
   data() {
     return {
-      lookUpId: '',
-      user: '',
       isBookmarkSelected: true,
       prefectures: [],
       cities: [],
@@ -116,30 +101,19 @@ export default {
       }
     }
   },
-  watch: {
-    court: {
-      deep: true,
-      handler: (court) => {
-        console.log(court);
-      }
+  computed: {
+    userData() {
+      return this.$store.state.user.userData;
     }
   },
   mounted() {
+    this.$store.dispatch('user/checkLogin');
     this.prefectures = prefecturesjson.prefectures;
     this.prefectures.map((v) => v.isSelected = false);
   },
   methods: {
     moveTo() {
       this.$router.push('/');
-    },
-    getUser(id) {
-      db.collection('users').doc(id).get().then(user => {
-        this.user = user.data();
-        console.log(this.user);
-      })
-      .catch(error => {
-        console.log(error);
-      });
     },
     logoutUser() {
       auth.signOut();
@@ -259,9 +233,7 @@ export default {
           left: 13px;
           z-index: 100;
         }
-        .deletePlaceholder {
-          display: none;
-        }
+        .deletePlaceholder { display: none; }
       }
     }
     .confirm-btn {
