@@ -14,12 +14,14 @@
       @changeStatus="changeStatus"
     />
     <div v-if="isBookmarkSelected" class="your-bookmarks">
-      <!-- <div v-if="!userData.bookmarks">
+      <div v-if="!userData.bookmarks" class="no-bookmarks">
         <p>まだブックマークがありません</p>
       </div>
-      <div v-if="userData.bookmarks.length !== 0">
-        <p>ブックマークは以下の通りです</p>
-      </div> -->
+      <div v-else>
+        <div v-for="(item, idx) in userData.bookmarks" :key="idx">
+          {{ item }}
+        </div>
+      </div>
       <p class="sign-out" @click="logoutUser()">サインアウト</p>
     </div>
     <div v-if="!isBookmarkSelected" class="register-court">
@@ -91,6 +93,7 @@ export default {
       isBookmarkSelected: true,
       prefectures: [],
       cities: [],
+      hasUserBookmarks: false,
       // about court
       court: {
         name: '',
@@ -176,15 +179,21 @@ export default {
   .your-bookmarks {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    .no-bookmarks {
+      margin: 40px 0;
+      p {
+        color: #aaa;
+        font-size: 1em;
+        margin: 0;
+      }
+    }
     .sign-out {
       color: #aaa;
       font-size: 12px;
       transition: 200ms;
       text-align: center;
-      &:hover {
-        // border-bottom: 1px solid #aaa;
-        cursor: pointer;
-      }
+      &:hover { cursor: pointer; }
     }
   }
   .register-court {
