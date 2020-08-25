@@ -4,12 +4,6 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'GoogleIcon'
-}
-</script>
-
 <style lang="scss" scoped>
 .icon {
   width: 25px;
