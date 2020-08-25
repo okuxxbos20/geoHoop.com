@@ -1,8 +1,8 @@
 <template>
   <footer>
     <div class="items">
-      <p>about</p>
-      <p>legal</p>
+      <p @click="moveTo('about')">about</p>
+      <p @click="moveTo('legal')">legal</p>
     </div>
     <p class="copylight">
       <small lang="en">©2020 geoHoop.com</small>
@@ -12,6 +12,11 @@
 
 <script>
 export default {
+  methods: {
+    moveTo(to) {
+      this.$router.push(`/${to}`);
+    }
+  }
 }
 </script>
 
