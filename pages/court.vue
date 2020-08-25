@@ -16,11 +16,13 @@
             <p class="pre-city">#{{ court.prefecture }} #{{ court.city }}</p>
             <div class="likes-bookmarks">
               <label @click="likesCount()">
-                <HeartEmptyIcon />
+                <HeartEmptyIcon v-if="!isLiked" />
+                <HeartIcon v-if="isLiked" />
                 <span>{{ court.likes }}</span>
               </label>
               <label @click="bookmarksCount()">
-                <BookmarkEmptyIcon />
+                <BookmarkEmptyIcon v-if="!isBookmarked"/>
+                <BookmarkIcon v-if="isBookmarked"/>
                 <span>{{ court.bookmarks }}</span>
               </label>
             </div>
@@ -93,15 +95,19 @@ export default {
       court: {},
       isOutside: null,
       geoHoop: '#262626',
-      background: '#fff'
+      background: '#fff',
+      isLiked: false,
+      isBookmarked: false
     };
   },
   methods : {
     likesCount() {
       alert('いいねが押されました');
+      this.isLiked = !this.isLiked;
     },
     bookmarksCount() {
       alert('ブックマークボタンが押されました');
+      this.isBookmarked = !this.isBookmarked;
     }
   }
 }
