@@ -4,6 +4,8 @@ import GoogleIcon from './GoogleIcon';
 import HeartEmptyIcon from './HeartEmptyIcon';
 import HeartIcon from './HeartIcon';
 import SearchIcon from './SearchIcon';
+import FormIcon from './FormIcon';
+import GeoIcon from './GeoIcon';
 
 export {
   BookmarkEmptyIcon,
@@ -11,5 +13,7 @@ export {
   GoogleIcon,
   HeartEmptyIcon,
   HeartIcon,
-  SearchIcon
+  SearchIcon,
+  FormIcon,
+  GeoIcon
 }
