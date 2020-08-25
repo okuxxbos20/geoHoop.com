@@ -207,12 +207,12 @@ export default {
   z-index: 1000;
   .geo-hoop {
     color: #eee;
-    margin: 0 0 0 10px;
+    margin: 0 0 0 20px;
     transition: 200ms;
     &:hover { cursor: pointer; }
   }
   .right-box {
-    margin: 8px 10px 0 0;
+    margin-right: 20px;
     .not-login {
       color: #fff;
       transition: 200ms;

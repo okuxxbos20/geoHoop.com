@@ -1,21 +1,14 @@
 <template>
   <div class="icon">
-    <svg viewBox="0 0 16 16" class="bi bi-heart-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-      <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+    <svg viewBox="0 0 16 16" class="bi bi-heart-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
     </svg>
   </div>
 </template>
-
-<script>
-export default {
-}
-</script>
 
 <style lang="scss" scoped>
 .icon {
   width: 20px;
   height: 20px;
   margin: 0;
-  path { fill: #eee; }
 }
 </style>
