@@ -26,32 +26,20 @@
     </aside>
     <main>
       <CourtForm v-if="currentPage === 'court-form'" />
-      <AllCourt v-if="currentPage === 'all-court'" :courts="courts" />
+      <AllCourt v-if="currentPage === 'all-court'" />
     </main>
   </div>
 </template>
 
 <script>
 import { ArrowLeftIcon, ArrowRightIcon, FormIcon, GeoIcon } from '@/assets/icons';
-import firebase from '~/plugins/firebase';
-const db = firebase.firestore();
 
 export default {
   components: { ArrowLeftIcon, ArrowRightIcon, FormIcon, GeoIcon },
   data() {
     return {
-      currentPage: 'court-form',
-      courts: []
+      currentPage: 'all-court'
     }
-  },
-  created() {
-    db.collection('court').get().then((court) => {
-      court.forEach((v) => {
-        this.courts.push(v.data());
-      });
-    }).catch((error) => {
-      console.log(error);
-    });
   },
   methods: {
     moveTo(to) {
@@ -59,9 +47,6 @@ export default {
     },
     changePage(to) {
       this.currentPage = to;
-    },
-    checkAll() {
-      this.isAllCourtChecked = !this.isAllCourtChecked;
     }
   },
   head() {

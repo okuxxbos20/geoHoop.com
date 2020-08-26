@@ -10,9 +10,10 @@
       <table>
         <tr class="column-name">
           <td class="checkbox-place">
-            <label>
-              <input v-model="isAllCourtChecked" type="checkbox">
-              <span class="checkmark"></span>
+            <label class="all-checkbox" @click="checkAll()">
+              <span
+                :class="{ allSelect: isAllCourtChecked, indeterminate: isIndeterminate }">
+              </span>
             </label>
           </td>
           <td>コート名</td>
@@ -28,8 +29,8 @@
           :class="{ odd: idx % 2 !== 0 }"
         >
           <td class="checkbox-place">
-            <label>
-              <input type="checkbox">
+            <label class="individual-checkbox">
+              <input v-model="selectedCourt" type="checkbox" :value="court.name">
               <span class="checkmark"></span>
             </label>
           </td>
@@ -41,7 +42,7 @@
         </tr>
       </table>
       <div class="table-footer">
-        <p>120件中10件のデータを表示中</p>
+        <p>{{ courts.length }}件中{{ courts.length }}件のデータを表示中</p>
         <div class="pagenation">
           <label>
             <ArrowLeftIcon class="arrow-icon" />
@@ -57,24 +58,53 @@
 
 <script>
 import { ArrowLeftIcon, ArrowRightIcon } from '@/assets/icons';
+import firebase from '~/plugins/firebase';
+const db = firebase.firestore();
 
 export default {
   components: { ArrowLeftIcon, ArrowRightIcon },
   data() {
     return {
+      courts: [],
       isAllCourtChecked: false,
+      isIndeterminate: false,
+      selectedCourt: []
     }
   },
-  props: {
-    courts: {
-      type: Array,
-      required: false,
-      default: []
+  created() {
+    db.collection('court').get().then((court) => {
+      court.forEach((v) => {
+        this.courts.push(v.data());
+      });
+    }).catch((error) => {
+      console.log(error);
+    });
+  },
+  watch: {
+    selectedCourt(newArr, oldArr) {
+      if (newArr.length === 0) {
+        this.isIndeterminate = false;
+        this.isAllCourtChecked = false;
+      } else if (newArr.length === this.courts.length) {
+        this.isIndeterminate = false;
+        this.isAllCourtChecked = true;
+      } else {
+        this.isIndeterminate = true;
+        this.isAllCourtChecked = false;
+      }
     }
   },
   methods: {
     checkAll() {
-      this.isAllCourtChecked = !this.isAllCourtChecked;
+      if (this.isAllCourtChecked) {
+        this.isAllCourtChecked = false;
+        this.isIndeterminate = false;
+        this.selectedCourt = [];
+      } else {
+        this.isAllCourtChecked = true;
+        this.isIndeterminate = false;
+        this.selectedCourt = this.courts.map((v) => v.name);
+      }
     }
   }
 }
@@ -140,9 +170,55 @@ export default {
       .odd { background: #e8ecf1; }
       .checkbox-place {
         width: 100px;
-        label {
-          text-align: center;
-          margin-left: 20px;
+        .all-checkbox {
+          margin: 0 0 0 20px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          &:hover { cursor: pointer; }
+          span {
+            width: 17px;
+            height: 17px;
+            display: block;
+            border: 2px solid #6c7a89;
+            border-radius: 4px;
+            position: relative;
+          }
+          .allSelect {
+            background: #6c7a89;
+            &:after {
+              content: '';
+              display: block;
+              position: absolute;
+              top: -1px;
+              left: 3px;
+              width: 7px;
+              height: 12px;
+              transform: rotate(40deg);
+              border-bottom: 2px solid #eee;
+              border-right: 2px solid #eee;
+            }
+          }
+          .indeterminate {
+            background: #6c7a89;
+            &:after {
+              content: '';
+              display: block;
+              position: absolute;
+              width: 11px;
+              top: 50%;
+              left: 50%;
+              -webkit-transform: translate(-52%,-50%);
+              transform: translate(-52%,-50%);
+              border-bottom: 2px solid #eee;
+            }
+          }
+        }
+        .individual-checkbox {
+          margin: 0 0 0 20px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
           &:hover { cursor: pointer; }
           input[type='checkbox'] { display: none; }
           .checkmark {
@@ -159,6 +235,7 @@ export default {
             }
           }
           input[type='checkbox']:checked + .checkmark {
+            &:before { background: #6c7a89; }
             &:after {
               content: '';
               display: block;
@@ -168,8 +245,8 @@ export default {
               width: 7px;
               height: 12px;
               transform: rotate(40deg);
-              border-bottom: 2px solid #6c7a89;
-              border-right: 2px solid #6c7a89;
+              border-bottom: 2px solid #eee;
+              border-right: 2px solid #eee;
             }
           }
         }
