@@ -56,7 +56,10 @@
 </template>
 
 <script>
+import { ArrowLeftIcon, ArrowRightIcon } from '@/assets/icons';
+
 export default {
+  components: { ArrowLeftIcon, ArrowRightIcon },
   data() {
     return {
       isAllCourtChecked: false,
@@ -151,7 +154,7 @@ export default {
               left: 0;
               width: 17px;
               height: 17px;
-              border: 1px solid #313a46;
+              border: 2px solid #6c7a89;
               border-radius: 4px;
             }
           }
@@ -165,8 +168,8 @@ export default {
               width: 7px;
               height: 12px;
               transform: rotate(40deg);
-              border-bottom: 2px solid #313a46;
-              border-right: 2px solid #313a46;
+              border-bottom: 2px solid #6c7a89;
+              border-right: 2px solid #6c7a89;
             }
           }
         }
