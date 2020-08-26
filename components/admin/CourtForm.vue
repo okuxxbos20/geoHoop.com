@@ -315,19 +315,15 @@ export default {
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      .upper {
+      @mixin columns() {
         width: 100%;
         display: flex;
         flex-direction: column;
         margin: 0 10px;
       }
+      .upper { @include columns(); }
       .collapseUpper { width: 50%; }
-      .lower {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        margin: 0 10px;
-      }
+      .lower { @include columns(); }
       .collapseLower { width: 50%; }
     }
     .collapseBox { flex-direction: row; }
