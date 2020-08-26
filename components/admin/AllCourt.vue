@@ -21,6 +21,8 @@
           <td>市町村区</td>
           <td class="add-triangle">Likes</td>
           <td class="add-triangle">Bookmarks</td>
+          <td>コートタイプ</td>
+          <td class="add-triangle">登録日</td>
         </tr>
         <tr
           v-for="(court, idx) in courts"
@@ -39,6 +41,11 @@
           <td>{{ court.city }}</td>
           <td>{{ court.likes }}</td>
           <td>{{ court.bookmarks }}</td>
+          <td>
+            <span v-if="court.isOutside" class="outside">屋外</span>
+            <span v-if="!court.isOutside" class="inside">屋内</span>
+          </td>
+          <td>{{ court.createdAt | timestampFunc  }}</td>
         </tr>
       </table>
       <div class="table-footer">
@@ -58,27 +65,36 @@
 
 <script>
 import { ArrowLeftIcon, ArrowRightIcon } from '@/assets/icons';
-import firebase from '~/plugins/firebase';
-const db = firebase.firestore();
 
 export default {
   components: { ArrowLeftIcon, ArrowRightIcon },
+  filters: {
+    timestampFunc(time) {
+      if (time !== undefined) {
+        const sum = time.seconds * 1000 + time.nanoseconds / (1000 ** 2);
+        const d = new Date(sum);
+        const year = d.getFullYear();
+        let month = d.getMonth() + 1;
+        let date = d.getDate();
+        month = month < 10 ? `0${month}` : month
+        date = date < 10 ? `0${date}` : date
+        return `${year}/${month}/${date}`;
+      }
+    }
+  },
   data() {
     return {
-      courts: [],
       isAllCourtChecked: false,
       isIndeterminate: false,
       selectedCourt: []
     }
   },
-  created() {
-    db.collection('court').get().then((court) => {
-      court.forEach((v) => {
-        this.courts.push(v.data());
-      });
-    }).catch((error) => {
-      console.log(error);
-    });
+  props: {
+    courts: {
+      type: Array,
+      required: false,
+      default: []
+    }
   },
   watch: {
     selectedCourt(newArr, oldArr) {
@@ -166,6 +182,22 @@ export default {
       .court-data {
         height: 40px;
         &:hover { cursor: pointer; }
+        td {
+          .outside {
+            color: #eee;
+            background: #3fc380;
+            font-size: 14px;
+            padding: 3px 8px;
+            border-radius: 20px;
+          }
+          .inside {
+            color: #eee;
+            background: #2574a9;
+            font-size: 14px;
+            padding: 3px 8px;
+            border-radius: 20px;
+          }
+        }
       }
       .odd { background: #e8ecf1; }
       .checkbox-place {
