@@ -23,22 +23,42 @@
         <GeoIcon />
         <p class="name">コート一覧</p>
       </label>
+      <label
+        :class="{ selected: currentPage === 'report' }"
+        @click="changePage('report')"
+      >
+        <GraphIcon />
+        <p class="name">レポート</p>
+      </label>
     </aside>
     <main>
       <CourtForm v-if="currentPage === 'court-form'" />
-      <AllCourt v-if="currentPage === 'all-court'" />
+      <AllCourt v-if="currentPage === 'all-court'" :courts="courts" />
+      <Report v-if="currentPage === 'report'" :courts="courts" />
     </main>
   </div>
 </template>
 
 <script>
-import { ArrowLeftIcon, ArrowRightIcon, FormIcon, GeoIcon } from '@/assets/icons';
+import { ArrowLeftIcon, ArrowRightIcon, FormIcon, GeoIcon, GraphIcon } from '@/assets/icons';
+import firebase from '~/plugins/firebase';
+const db = firebase.firestore();
 
 export default {
-  components: { ArrowLeftIcon, ArrowRightIcon, FormIcon, GeoIcon },
+  components: { ArrowLeftIcon, ArrowRightIcon, FormIcon, GeoIcon, GraphIcon },
+  created() {
+    db.collection('court').get().then((court) => {
+      court.forEach((v) => {
+        this.courts.push(v.data());
+      });
+    }).catch((error) => {
+      console.log(error);
+    });
+  },
   data() {
     return {
-      currentPage: 'all-court'
+      currentPage: 'report',
+      courts: []
     }
   },
   methods: {
