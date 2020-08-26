@@ -39,6 +39,9 @@ export default {
     {
       src: '~/plugins/vue2-google-maps',
       ssr: false
+    },{
+      src: '@/plugins/vue-chartjs',
+      ssr: false
     }
   ],
   /*
