@@ -201,6 +201,7 @@ export default {
         address: null,
         bookmarks: 0,
         city: null,
+        createdAt: new Date(),
         embedSrc: null,
         geo: { df: '', ff: '' },
         googleMapsUrl: '',
