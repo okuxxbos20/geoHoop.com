@@ -1,5 +1,5 @@
 <template>
-  <div class="admin container">
+  <div class="admin">
     <header>
       <p class="geo-hoop" @click="$router.push('/')">geoHoop</p>
     </header>
@@ -9,14 +9,14 @@
         <label>
           <p v-if="error.email.isError === null || error.email.isError === false" class="form-name">メールアドレス</p>
           <p v-else class="error">{{ error.email.text }}</p>
-          <input v-model="email" type="email" />
+          <input @input="inputEmail($event.target.value)" type="email" />
         </label>
         <label>
           <p v-if="error.password.isError === null || error.password.isError === false" class="form-name">パスワード</p>
           <p v-else class="error">{{ error.password.text }}</p>
-          <input v-model="password" type="password" />
+          <input @input="inputPass($event.target.value)" type="password" />
         </label>
-        <button type="submit">ログイン</button>
+        <button type="submit" :class="{ activeBtn: error.isAllClear }">ログイン</button>
       </form>
     </main>
   </div>
@@ -36,7 +36,37 @@ export default {
       }
     }
   },
+  watch: {
+    email(newVal) {
+      if (newVal === null || newVal === '') {
+        this.error.email.isError = true;
+      } else {
+        this.error.email.isError = false;
+      }
+    },
+    password(newVal) {
+      if (newVal === null || newVal === '') {
+        this.error.password.isError = true;
+      } else {
+        this.error.password.isError = false;
+      }
+    },
+    error: {
+      deep: true,
+      handler: (error) => {
+        error.isAllClear = (!error.email.isError && !error.password.isError) ? true : false;
+      }
+    }
+  },
   methods: {
+    inputEmail(email) {
+      this.email = email;
+      this.error.email.isError = false;
+    },
+    inputPass(password) {
+      this.password = password;
+      this.error.password.isError = false;
+    },
     submitData() {
       this.error.email.isError = true;
       this.error.password.isError = true;
@@ -66,28 +96,33 @@ export default {
 
 <style lang="scss" scoped>
 .admin {
+  background: #e8ecf1;
+  width: 100%;
+  height: 100vh;
   header {
+    height: 80px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 80px;
     .geo-hoop {
-      color: #262626;
+      color: #313a46;
+      font-size: 20px;
       margin: 0;
       padding: 0 5px;
       &:hover {
         cursor: pointer;
-        border-bottom: 1px solid #aaa;
+        border-bottom: 1px solid #313a46;
       }
     }
   }
   main {
-    margin-top: 40px;
+    margin: 0px 10px 0;
     form {
       max-width: 500px;
-      color: #262626;
-      border: 1px solid #6c7a89;
+      color: #313a46;
+      background: #f7f7f7;
+      border: none;
       border-radius: 10px;
       display: flex;
       flex-direction: column;
@@ -117,13 +152,17 @@ export default {
         }
       }
       button {
+        color: #313a46;
         background: #fff;
         border: none;
-        border: 1px solid #262626;
-        border-radius: 100px;
-        padding: 10px 20px;
+        border-radius: 5px;
+        padding: 5px 20px;
         margin-top: 20px;
         &:focus { outline: none; }
+      }
+      .activeBtn {
+        color: #f7f7f7;
+        background: #313a46;
       }
     }
   }
