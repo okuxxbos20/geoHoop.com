@@ -42,9 +42,7 @@
             <label :class="{ error: error.city !== '市町村区' }">
               {{ error.city }}
             </label>
-            <span
-              :class="{ deletePlaceholder: court.city !== null }"
-            >
+            <span :class="{ deletePlaceholder: court.city !== null }">
               市町村区を選択
             </span>
             <select @change="getCity($event.target.value)">
@@ -56,6 +54,12 @@
                 {{ city.name }}
               </option>
             </select>
+          </div>
+          <div class="insert-place">
+            <label :class="{ error: error.address !== 'コートの住所' }">
+              {{ error.address }}
+            </label>
+            <input v-model="court.address" type="text">
           </div>
           <!-- 連絡先 -->
           <div class="insert-place">
@@ -89,7 +93,7 @@
         </div>
         <div class="lower" :class="{ collapseLower: isCollapse }">
           <!-- 緯度と経度 -->
-          <!-- <div class="insert-place">
+          <div class="insert-place">
             <label :class="{ error: error.geo !== '緯度と経度' }">
               {{ error.geo }}
             </label>
@@ -107,7 +111,7 @@
                 placeholder="経度"
               />
             </div>
-          </div> -->
+          </div>
           <!-- 地図情報 -->
           <div class="insert-place">
             <label :class="{ error: error.embedSrc !== 'htmlのsrc=の箇所' }">
@@ -157,9 +161,7 @@
             <label :class="{ error: error.refUrl !== '参考URL' }">
               {{ error.refUrl }}
             </label>
-            <span
-              :class="{ deletePlaceholder: court.refUrl !== null }"
-            >
+            <span :class="{ deletePlaceholder: court.refUrl !== null }">
               https://...
             </span>
             <input v-model="court.refUrl" type="text" />
@@ -170,6 +172,7 @@
         type="submit"
         class="submit-db"
         :class="{ isAbleToSubmit: isAbleToSubmit }"
+        :disabled="!isAbleToSubmit"
       >
         DBに送る
       </button>
@@ -195,6 +198,7 @@ export default {
       prefectures: [],
       cities: [],
       court: {
+        address: null,
         bookmarks: 0,
         city: null,
         embedSrc: null,
@@ -208,10 +212,12 @@ export default {
         name: null,
         prefecture: null,
         refUrl: null,
-        tel: null
+        tel: null,
+        zipCode: null
       },
       error: {
         name: 'コートの名称',
+        address: 'コートの住所',
         prefecture: '都道府県',
         city: '市町村区',
         geo: '緯度と経度',
@@ -250,9 +256,10 @@ export default {
       this.court.howManyGoal = num;
     },
     submitData() {
-      this.error.name = this.court.name === '' ? '*コート名を入力してください' : 'コートの名称';
+      this.error.name = this.court.name === '' || this.court.name === null ? '*コート名を入力してください' : 'コートの名称';
       this.error.prefecture = this.court.prefecture === null ? '*都道府県を選択してください' : '都道府県';
       this.error.city = this.court.city === null ? '*市町村区を選択してください' : '市町村区';
+      this.error.address = this.court.address === '' || this.court.address === null ? '*コートの住所を入力してください' : 'コートの住所';
       this.error.howManyGoal = this.court.howManyGoal === null ? '*ゴールの数を選択してください' : 'ゴールの数';
 
       if (this.court.geo.df === '' && this.court.geo.ff === '') {
