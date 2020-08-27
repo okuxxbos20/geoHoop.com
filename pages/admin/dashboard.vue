@@ -10,18 +10,18 @@
         </div>
       </div>
       <label
-        :class="{ selected: currentPage === 'court-form' }"
-        @click="changePage('court-form')"
-      >
-        <FormIcon />
-        <p class="name">フォーム</p>
-      </label>
-      <label
         :class="{ selected: currentPage === 'all-court' }"
         @click="changePage('all-court')"
       >
         <GeoIcon />
         <p class="name">コート一覧</p>
+      </label>
+      <label
+        :class="{ selected: currentPage === 'court-form' }"
+        @click="changePage('court-form')"
+      >
+        <FormIcon />
+        <p class="name">フォーム</p>
       </label>
       <label
         :class="{ selected: currentPage === 'report' }"
@@ -32,8 +32,8 @@
       </label>
     </aside>
     <main>
-      <CourtForm v-if="currentPage === 'court-form'" />
       <AllCourt v-if="currentPage === 'all-court'" :courts="courts" />
+      <CourtForm v-if="currentPage === 'court-form'" />
       <Report v-if="currentPage === 'report'" :courts="courts" />
     </main>
   </div>
@@ -57,7 +57,7 @@ export default {
   },
   data() {
     return {
-      currentPage: 'report',
+      currentPage: 'all-court',
       courts: []
     }
   },
