@@ -16,13 +16,20 @@
               </span>
             </label>
           </td>
-          <td>コート名</td>
-          <td>都道府県</td>
-          <td>市町村区</td>
-          <td class="add-triangle">Likes</td>
-          <td class="add-triangle">Bookmarks</td>
-          <td>コートタイプ</td>
-          <td class="add-triangle">登録日</td>
+          <td><label>コート名</label></td>
+          <td><label>都道府県</label></td>
+          <td><label>市町村区</label></td>
+          <td class="add-triangle" @click="changeLikesOrder()">
+            <label>Likes</label>
+          </td>
+          <td class="add-triangle" @click="changeBookmarksOrder()">
+            <label>Bookmarks</label>
+          </td>
+          <td><label>コートタイプ</label></td>
+          <td class="add-triangle" @click="changeCreatedAtOrder()">
+            <label>登録日</label>
+          </td>
+          <td><label>id</label></td>
         </tr>
         <tr
           v-for="(court, idx) in courts"
@@ -36,16 +43,23 @@
               <span class="checkmark"></span>
             </label>
           </td>
-          <td>{{ court.name }}</td>
-          <td>{{ court.prefecture }}</td>
-          <td>{{ court.city }}</td>
-          <td>{{ court.likes }}</td>
-          <td>{{ court.bookmarks }}</td>
+          <td><label>{{ court.name }}</label></td>
+          <td><label>{{ court.prefecture }}</label></td>
+          <td><label>{{ court.city }}</label></td>
+          <td><label>{{ court.likes }}</label></td>
+          <td><label>{{ court.bookmarks }}</label></td>
           <td>
-            <span v-if="court.isOutside" class="outside">屋外</span>
-            <span v-if="!court.isOutside" class="inside">屋内</span>
+            <label>
+              <span v-if="court.isOutside" class="outside">屋外</span>
+              <span v-if="!court.isOutside" class="inside">屋内</span>
+            </label>
           </td>
-          <td>{{ court.createdAt | timestampFunc  }}</td>
+          <td><label>{{ court.createdAt | timestampFunc  }}</label></td>
+          <td>
+            <label @click="moveTo(court.id)" class="court-id">
+              {{ court.id.substr(0, 8) }}...
+            </label>
+          </td>
         </tr>
       </table>
       <div class="table-footer">
@@ -86,7 +100,10 @@ export default {
     return {
       isAllCourtChecked: false,
       isIndeterminate: false,
-      selectedCourt: []
+      selectedCourt: [],
+      isLikesAsc: null,
+      isBookmarksAsc: null,
+      isCreatedAtAsc: null
     }
   },
   props: {
@@ -121,6 +138,48 @@ export default {
         this.isIndeterminate = false;
         this.selectedCourt = this.courts.map((v) => v.name);
       }
+    },
+    changeLikesOrder() {
+      if (this.isLikesAsc || this.isLikesAsc === null) {
+        this.courts = this.courts.sort((a, b) => {
+          return b.likes - a.likes;
+        })
+        this.isLikesAsc = false;
+      } else if (!this.isLikesAsc || this.isLikesAsc === null) {
+        this.courts = this.courts.sort((a, b) => {
+          return a.likes - b.likes;
+        })
+        this.isLikesAsc = true;
+      }
+    },
+    changeBookmarksOrder() {
+      if (this.isBookmarksAsc || this.isBookmarksAsc === null) {
+        this.courts = this.courts.sort((a, b) => {
+          return b.bookmarks - a.bookmarks;
+        })
+        this.isBookmarksAsc = false;
+      } else if (!this.isBookmarksAsc || this.isBookmarksAsc === null) {
+        this.courts = this.courts.sort((a, b) => {
+          return a.bookmarks - b.bookmarks;
+        })
+        this.isBookmarksAsc = true;
+      }
+    },
+    changeCreatedAtOrder() {
+      if (this.isCreatedAtAsc || this.isCreatedAtAsc === null) {
+        this.courts = this.courts.sort((a, b) => {
+          return b.createdAt - a.createdAt;
+        })
+        this.isCreatedAtAsc = false;
+      } else if (!this.isCreatedAtAsc || this.isCreatedAtAsc === null) {
+        this.courts = this.courts.sort((a, b) => {
+          return a.createdAt - b.createdAt;
+        })
+        this.isCreatedAtAsc = true;
+      }
+    },
+    moveTo(id) {
+      this.$router.push({ name: 'court', query: { id: id } });
     }
   }
 }
@@ -156,33 +215,38 @@ export default {
         height: 50px;
         font-weight: 600;
         border-bottom: 1px solid #ddd;
+        td {
+          label { margin: 0 10px; }
+        }
         .add-triangle {
           position: relative;
+          &:hover { cursor: pointer; }
           @mixin traiangle($top) {
             content: '';
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             position: absolute;
             top: $top;
-            right: 30px;
+            right: -1px;
             margin: auto;
             box-sizing: border-box;
-            border: 5px solid transparent;
+            border: 4px solid transparent;
           }
           &:before {
-            @include traiangle(28%);
-            border-bottom: 5px solid #bdc3c7;
+            @include traiangle(30%);
+            border-bottom: 4px solid #bdc3c7;
           }
           &:after {
-            @include traiangle(55%);
-            border-top: 5px solid #bdc3c7;
+            @include traiangle(54%);
+            border-top: 4px solid #bdc3c7;
           }
         }
       }
       .court-data {
         height: 40px;
-        &:hover { cursor: pointer; }
+        // &:hover { cursor: pointer; }
         td {
+          label { margin: 0 10px; }
           .outside {
             color: #eee;
             background: #3fc380;
@@ -197,13 +261,20 @@ export default {
             padding: 3px 8px;
             border-radius: 20px;
           }
+          .court-id {
+            transition: 100ms;
+            &:hover {
+              color: #1e8bc3;
+              cursor: pointer;
+            }
+          }
         }
       }
       .odd { background: #e8ecf1; }
       .checkbox-place {
         width: 100px;
         .all-checkbox {
-          margin: 0 0 0 20px;
+          margin: 0 20px 0;
           display: flex;
           flex-direction: column;
           justify-content: center;
