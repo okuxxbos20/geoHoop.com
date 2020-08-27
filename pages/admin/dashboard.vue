@@ -32,9 +32,17 @@
       </label>
     </aside>
     <main>
-      <AllCourt v-if="currentPage === 'all-court'" :courts="courts" />
+      <AllCourt
+        v-if="currentPage === 'all-court'"
+        :courts="courts"
+        :is-loaded="isLoaded"
+      />
       <CourtForm v-if="currentPage === 'court-form'" />
-      <Report v-if="currentPage === 'report'" :courts="courts" />
+      <Report
+        v-if="currentPage === 'report'"
+        :courts="courts"
+        :is-loaded="isLoaded"
+      />
     </main>
   </div>
 </template>
@@ -47,9 +55,11 @@ const db = firebase.firestore();
 export default {
   components: { ArrowLeftIcon, ArrowRightIcon, FormIcon, GeoIcon, GraphIcon },
   created() {
+    this.isLoaded = false;
     db.collection('court').get().then((court) => {
       court.forEach((v) => {
         this.courts.push(v.data());
+        this.isLoaded = true;
       });
     }).catch((error) => {
       console.log(error);
@@ -58,7 +68,8 @@ export default {
   data() {
     return {
       currentPage: 'all-court',
-      courts: []
+      courts: [],
+      isLoaded: false
     }
   },
   methods: {

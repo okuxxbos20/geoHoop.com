@@ -42,6 +42,9 @@ export default {
     },{
       src: '@/plugins/vue-chartjs',
       ssr: false
+    },{
+      src: '@/plugins/vue-loading-template',
+      ssr: false
     }
   ],
   /*

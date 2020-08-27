@@ -5,7 +5,7 @@
     </header>
     <main>
       <div class="data-sheet">
-        <PrefectureBar :courts="courts" />
+        <PrefectureBar :courts="courts" :is-loaded="isLoaded" />
       </div>
       <div class="data-sheet">
         <Scatter />
@@ -27,6 +27,11 @@ export default {
       type: Array,
       required: false,
       default: []
+    },
+    isLoaded: {
+      type: Boolean,
+      required: true,
+      default: false
     }
   }
 }

@@ -1,8 +1,15 @@
 <template>
   <div class="prefcture-bar">
     <bar-chart
+      v-if="isLoaded"
       :chart-data="chartdata"
       :options="options"
+    />
+    <vue-loading
+      v-else
+      type="bars"
+      color="#6c757d"
+      :size="{ width: '50px', height: '50px' }"
     />
   </div>
 </template>
@@ -52,6 +59,11 @@ export default {
       type: Array,
       required: false,
       default: []
+    },
+    isLoaded: {
+      type: Boolean,
+      required: true,
+      default: false
     }
   },
   created() {

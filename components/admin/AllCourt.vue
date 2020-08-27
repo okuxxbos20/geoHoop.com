@@ -7,7 +7,7 @@
       <div class="controller">
         <label>フィルター</label>
       </div>
-      <table>
+      <table v-if="isLoaded">
         <tr class="column-name">
           <td class="checkbox-place">
             <label class="all-checkbox" @click="checkAll()">
@@ -62,6 +62,12 @@
           </td>
         </tr>
       </table>
+      <vue-loading
+        v-else
+        type="bars"
+        color="#6c757d"
+        :size="{ width: '50px', height: '50px' }"
+      />
       <div class="table-footer">
         <p>{{ courts.length }}件中{{ courts.length }}件のデータを表示中</p>
         <div class="pagenation">
@@ -109,8 +115,13 @@ export default {
   props: {
     courts: {
       type: Array,
-      required: false,
+      required: true,
       default: []
+    },
+    isLoaded: {
+      type: Boolean,
+      required: true,
+      default: false
     }
   },
   watch: {

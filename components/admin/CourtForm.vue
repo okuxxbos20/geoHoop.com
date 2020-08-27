@@ -55,11 +55,19 @@
               </option>
             </select>
           </div>
+          <!-- コートの住所 -->
           <div class="insert-place">
             <label :class="{ error: error.address !== 'コートの住所' }">
               {{ error.address }}
             </label>
             <input v-model="court.address" type="text">
+          </div>
+          <!-- 画像ファイル -->
+          <label>画像データをアップロード</label>
+          <div class="img-place">
+            <input ref="file" type="file">
+            <input ref="file" type="file">
+            <input ref="file" type="file">
           </div>
           <!-- 連絡先 -->
           <div class="insert-place">
@@ -93,7 +101,7 @@
         </div>
         <div class="lower" :class="{ collapseLower: isCollapse }">
           <!-- 緯度と経度 -->
-          <div class="insert-place">
+          <!-- <div class="insert-place">
             <label :class="{ error: error.geo !== '緯度と経度' }">
               {{ error.geo }}
             </label>
@@ -111,7 +119,7 @@
                 placeholder="経度"
               />
             </div>
-          </div>
+          </div> -->
           <!-- 地図情報 -->
           <div class="insert-place">
             <label :class="{ error: error.embedSrc !== 'htmlのsrc=の箇所' }">
@@ -143,15 +151,13 @@
                   v-model="court.isOutside"
                   type="radio"
                   value="true"
-                >
+                />
                 <p>屋外</p>
-              </label>
-              <label class="item">
                 <input
                   v-model="court.isOutside"
                   type="radio"
                   value="false"
-                >
+                />
                 <p>屋内</p>
               </label>
             </div>
@@ -229,7 +235,7 @@ export default {
         refUrl: '参考URL',
         tel: '連絡先'
       },
-      isAbleToSubmit: false
+      isAbleToSubmit: true
       // 全てのバリデーションをパスしたらtrueにする
     }
   },
@@ -364,9 +370,7 @@ export default {
       display: flex;
       flex-direction: column;
       position: relative;
-      .error {
-        color: red;
-      }
+      .error { color: red; }
       span {
         color: #757575;
         position: absolute;
@@ -396,6 +400,13 @@ export default {
           p { margin: 0 0 0 8px; }
         }
       }
+    }
+    .img-place {
+      width: 100%;
+      background: #e8ecf1;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
     }
   }
   .collapseForm { max-width: 1200px; }
