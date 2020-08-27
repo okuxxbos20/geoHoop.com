@@ -62,13 +62,6 @@
             </label>
             <input v-model="court.address" type="text">
           </div>
-          <!-- 画像ファイル -->
-          <label>画像データをアップロード</label>
-          <div class="img-place">
-            <input ref="file" type="file">
-            <input ref="file" type="file">
-            <input ref="file" type="file">
-          </div>
           <!-- 連絡先 -->
           <div class="insert-place">
             <label :class="{ error: error.tel !== '連絡先' }">
@@ -171,6 +164,13 @@
               https://...
             </span>
             <input v-model="court.refUrl" type="text" />
+          </div>
+          <!-- 画像ファイル -->
+          <label>画像データをアップロード</label>
+          <div class="img-place">
+            <input ref="file" type="file">
+            <input ref="file" type="file">
+            <input ref="file" type="file">
           </div>
         </div>
       </div>
