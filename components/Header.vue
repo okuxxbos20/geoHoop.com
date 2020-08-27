@@ -196,7 +196,7 @@ export default {
 <style lang="scss" scoped>
 .header {
   width: 100%;
-  height: 40px;
+  height: 45px;
   background: transparent;
   display: flex;
   flex-direction: row;
